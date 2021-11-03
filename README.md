@@ -1,16 +1,7 @@
 # MinecraftManhunt
-[View on Bukkit](https://dev.bukkit.org/projects/dream-style-manhunt) • 
-[View on SpigotMC](https://www.spigotmc.org/resources/dream-style-manhunt.83309/) •
-[View on PaperMC](https://papermc.io/forums/t/dream-style-manhunt/5072)
-
-> **Having issues?** Check the [FAQ Issues page](https://github.com/yummypasta/MinecraftManhunt/issues?q=label%3AFAQ), or report a problem on the [Issues tab](https://github.com/yummypasta/MinecraftManhunt/issues/new/choose)!
-
 ---
 
-Made by Eric ([yoonicode.com](http://yoonicode.com/?utm_source=github&utm_medium=web&utm_campaign=manhunt-github))<br>
-Github: [yummypasta](https://github.com/yummypasta)<br>
-Minecraft: [i18n](https://namemc.com/profile/i18n.4)
-
+Made by Sebastian Sole (github.com/Sebastian-Sole/ManhuntPlus)<br>
 ---
 
 Inspired by [Dream](https://youtube.com/dreamtraps) on YouTube
@@ -24,12 +15,12 @@ Hunters try to kill the runners before they beat the enderdragon. Runners must b
 - Compass tracking: Right-click with your compass to choose who to track, then the compass will point to that runner!
 - Portal tracking: If a runner is in the nether, the compass will track their last-used portal!
 - Teams assignment: Automatically assigns in-game `/team` to distinguish between players with colors!
-- Discord integration: Optionally integrate with Discord for extra features!
+- Discord integration *COMING SOON*: Optionally integrate with Discord for extra features! 
   - Auto role assignment: Automatically assign Discord roles according to teams
   - Music player: Automatically (or manually) play music in your Discord voice channel that mirrors the action happening!
 
 ## Instructions For Use
-- Move the .jar from the [Releases tab](https://github.com/yummypasta/MinecraftManhunt/releases/) to your plugins folder.
+- Move the .jar from the [Releases tab](https://github.com/Sebastian-Sole/ManhuntPlus/releases/) to your plugins folder.
 - Make sure your config file is up to date and has all the required options.
 - Assign roles with `/speedrunner`, `/hunter`, and `/spectator`.
 - If you want automatic music, type `/music auto` now.
@@ -38,7 +29,7 @@ Hunters try to kill the runners before they beat the enderdragon. Runners must b
 
 > **Note**: teams are not persistent between server sessions— if you shut down the server you'll have to re-assign teams and type `/start` again. Have players put their items in chests before typing `/start` if you're doing this, since the command clears inventories.
 
-### Discord Setup Instructions
+### Discord Setup Instructions *COMING SOON*
 - Create a Discord app from the [Developer Portal](https://discord.com/developers/applications).
 - Add a Bot under the bots tab.
 - Take note of your **Client ID** (in the General Information tab) and your **Token** (under the Bot tab).
@@ -58,7 +49,7 @@ Hunters try to kill the runners before they beat the enderdragon. Runners must b
 - `/start`: Start the match
 - `/end`: End the match
 - `/compass`: Give yourself a compass
-- `/music`: Controls the Discord music
+- `/music`: Controls the Discord music *COMING SOON*
   - `/music list`: Gets a list of available tracks to play.
   - `/music <trackname>`: Plays a specific track by nickname and turns off auto-music.
   - `/music stop`: Stops all music playing and turns off auto-music.
@@ -91,7 +82,7 @@ Edit the `plugins/MinecraftManhunt/config.yml` file with the following options:
   preGameBorderSize | States how big the pre-game world border would be, if enabled. | int | Optional, defaults to `100`; ignored when `preGameWorldBorder` is `false`
 
 
-  ### Discord Integration
+  ### Discord Integration *COMING SOON*
   Key|Description|Type|Required?
   --|--|--|--
   enableDiscord | Set to true to turn on Discord integration. Read below for more information. | boolean | Required
@@ -119,16 +110,13 @@ Permission|Description|Recommended level
 `minecraftmanhunt.music` | Allow `/music` command. Note that music commands can also be typed in Discord if `processDiscordCommands` in config is set to `true`. | everyone
 `minecraftmanhunt.config` | Allow config-changing commands, such as `/setheadstart`. | operators
 
-## Troubleshooting
-- `online-mode` in server.properties must be set to `true` as of version 1.2.4.
-- If you are using Discord integration, make sure your server's system clock is set correctly.
-- Check the [FAQ Issues page](https://github.com/yummypasta/MinecraftManhunt/issues?q=label%3AFAQ), or report a problem on the [Issues tab](https://github.com/yummypasta/MinecraftManhunt/issues/new/choose)!
-
 ## Advanced: Developing
 - This project uses Maven. To build, run the `package` script.
 - Pull requests and Issues are welcome!
 
-## Made With
-- [Bukkit/Spigot plugin library](https://bukkit.org/)
-- [JDA: Java Discord Library](https://github.com/DV8FromTheWorld/JDA)
-- [LavaPlayer: Audio Player for Discord](https://github.com/sedmelluq/lavaplayer)
+---
+This project is a further development on yoonicode's original project:
+
+Made by Eric ([yoonicode.com](http://yoonicode.com/?utm_source=github&utm_medium=web&utm_campaign=manhunt-github))<br>
+Github: [yummypasta](https://github.com/yummypasta)<br>
+Minecraft: [i18n](https://namemc.com/profile/i18n.4)
