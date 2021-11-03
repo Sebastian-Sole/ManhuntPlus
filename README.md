@@ -2,13 +2,6 @@
 ---
 
 Made by Sebastian Sole (github.com/Sebastian-Sole/ManhuntPlus)<br>
-
----
-This project is a further development on yoonicode's original project:
-
-Made by Eric ([yoonicode.com](http://yoonicode.com/?utm_source=github&utm_medium=web&utm_campaign=manhunt-github))<br>
-Github: [yummypasta](https://github.com/yummypasta)<br>
-Minecraft: [i18n](https://namemc.com/profile/i18n.4)
 ---
 
 Inspired by [Dream](https://youtube.com/dreamtraps) on YouTube
@@ -121,3 +114,9 @@ Permission|Description|Recommended level
 - This project uses Maven. To build, run the `package` script.
 - Pull requests and Issues are welcome!
 
+---
+This project is a further development on yoonicode's original project:
+
+Made by Eric ([yoonicode.com](http://yoonicode.com/?utm_source=github&utm_medium=web&utm_campaign=manhunt-github))<br>
+Github: [yummypasta](https://github.com/yummypasta)<br>
+Minecraft: [i18n](https://namemc.com/profile/i18n.4)
