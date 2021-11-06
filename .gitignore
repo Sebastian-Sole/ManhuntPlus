@@ -13,3 +13,7 @@ buildNumber.properties
 *.iml
 *.idea/
 .DS_Store
+
+*.class
+
+*.lst

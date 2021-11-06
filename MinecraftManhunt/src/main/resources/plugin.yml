@@ -51,3 +51,7 @@ commands:
     description: Drops extra items on hunter deaths.
     usage: /extradrops
     permission: minecraftmanhunt.extradrops
+  chestgenerate:
+    description: Small chance that when a player breaks a block, it turns into a chest with random items.
+    usage: /chestgenerate
+    permission: minecraftmanhunt.chestgenerate
