@@ -56,6 +56,9 @@ Hunters try to kill the runners before they beat the enderdragon. Runners must b
   - `/music auto`: Turns on auto-music, which plays different tracks based on game events and hunter/runner distance.
   - `/music forceupdate`: Forces the music to update to match the current hunter/runner distance. Use `/music stop` first if a special event track is playing.
 - `/setheadstart <duration>`: Sets the headstart duration, in seconds. 
+- `/runnerhelp`: Rewards runner for killing hunters
+- `/hunterhelp`: If hunter is killed by a runner, they respawn with increasingly better items.
+- `/chestgenerate`: Upon breaking a block, there is a small probability that a chest will spawn with random items.
 ## Configuration Options
 Edit the `plugins/MinecraftManhunt/config.yml` file with the following options:
   
