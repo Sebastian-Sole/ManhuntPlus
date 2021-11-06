@@ -36,10 +36,12 @@ public class PluginCommands implements CommandExecutor {
             "setheadstart",
             "runnerhelp",
             "hunterhelp",
-            "extradrops"
+            "extradrops",
+            "chestgenerate"
     };
     public boolean hitHasRegistered; // used for startGameByHit option
     public boolean extraDrops;
+    public boolean chestGenerate;
 
     int compassTask = -1;
     int dangerLevelTask = -1;
@@ -125,6 +127,7 @@ public class PluginCommands implements CommandExecutor {
             }
             case "/start":
             case "/end":
+            case "/chestgenerate":
             case "/compass":
             case "/clearteams":
                 return new ArrayList<String>();
@@ -456,14 +459,14 @@ public class PluginCommands implements CommandExecutor {
             if (gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
             }
-            runnerHelp=true;
+            runnerHelp=!runnerHelp;
             commandSender.sendMessage("Runner help is set to: " + runnerHelp);
 
         }else if("hunterhelp".equals(label)){
             if (gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
             }
-            hunterHelp=true;
+            hunterHelp=!hunterHelp;
             commandSender.sendMessage("Hunter help is set to: " + hunterHelp);
 
 
@@ -471,8 +474,14 @@ public class PluginCommands implements CommandExecutor {
             if (gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
             }
-            extraDrops=true;
+            extraDrops=!extraDrops;
             commandSender.sendMessage("Extra drops is set to: " + extraDrops);
+        } else if ("chestgenerate".equals(label)){
+            if (gameIsRunning){
+                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
+            }
+            chestGenerate = !chestGenerate;
+            commandSender.sendMessage("Random Chest spawns is set to: " + chestGenerate);
         }
         return false;
 
