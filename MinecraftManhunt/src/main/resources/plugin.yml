@@ -55,3 +55,11 @@ commands:
     description: Small chance that when a player breaks a block, it turns into a chest with random items.
     usage: /chestgenerate
     permission: minecraftmanhunt.chestgenerate
+  hasteboost:
+    description: Every player has unlimited haste
+    usage: /hasteboost
+    permission: minecraftmanhunt.hasteboost
+  allhelp:
+    description: Enable all help (hunterhelp, runnerhelp, etc.)
+    usage: /allhelp
+    permission: minecraftmanhunt.allhelp

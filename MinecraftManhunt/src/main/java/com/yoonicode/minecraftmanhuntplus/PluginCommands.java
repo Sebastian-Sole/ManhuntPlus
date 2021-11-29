@@ -30,6 +30,7 @@ public class PluginCommands implements CommandExecutor {
             "hunterhelp",
             "extradrops",
             "chestgenerate",
+            "hasteboost",
             "allhelp"
     };
     public boolean hitHasRegistered; // used for startGameByHit option
@@ -44,6 +45,7 @@ public class PluginCommands implements CommandExecutor {
     private final PluginMain main;
     public boolean runnerHelp = false;
     public boolean hunterHelp = false;
+    public boolean hasteBoost = false;
 
     public PluginCommands(PluginMain main) {
         this.main = main;
@@ -63,17 +65,17 @@ public class PluginCommands implements CommandExecutor {
             case "/chestgenerate":
             case "/compass":
             case "/clearteams":
+            case "/hasteboost":
             case "/allhelp":
                 return new ArrayList<String>();
             case "/setheadstart": {
-                ArrayList<String> ret = new ArrayList<String>(){
+                return new ArrayList<String>(){
                     {
                         add("0");
                         add("30");
                         add("60");
                     }
                 };
-                return ret;
             }
             default:
                 return existingCompletions;
@@ -147,12 +149,19 @@ public class PluginCommands implements CommandExecutor {
             updateSpectators();
             runnersState();
             huntersState(headStartDuration);
-            BukkitScheduler scheduler = Bukkit.getScheduler();
-            compassTask = scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
+            compassTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
                 public void run() {
                     main.getTaskManager().updateCompass();
                 }
             }, 0L, 20L);
+
+            if (hasteBoost) {
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+                    public void run() {
+                        main.getTaskManager().giveHaste();
+                    }
+                }, 460L, 1200L);
+            }
 
             gameIsRunning = true;
             sendStartMessage();
@@ -263,6 +272,19 @@ public class PluginCommands implements CommandExecutor {
             commandSender.sendMessage("Random Chest spawns is set to: " + chestGenerate);
             return true;
         }
+        else if ("hasteboost".equals(label)){
+            if (gameIsRunning){
+                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
+                return true;
+            }
+            if (args.length != 0){
+                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
+                return true;
+            }
+            hasteBoost = !hasteBoost;
+            commandSender.sendMessage("Haste boost is set to: " + hasteBoost);
+            return true;
+        }
         else if ("allhelp".equals(label)){
             if (gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
@@ -275,6 +297,7 @@ public class PluginCommands implements CommandExecutor {
             hunterHelp = true;
             extraDrops = true;
             chestGenerate = true;
+            hasteBoost = true;
             commandSender.sendMessage("All helper methods are enabled");
             return true;
         }
@@ -328,8 +351,8 @@ public class PluginCommands implements CommandExecutor {
             player.setMaxHealth(20.0);
             player.setHealth(20.0);
             player.setFoodLevel(20);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 450,2));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 450,2));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 450,1));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE,1));
 
             if (main.getConfig().getBoolean("clearRunnerInvOnStart", false)) {
                 player.getInventory().clear();

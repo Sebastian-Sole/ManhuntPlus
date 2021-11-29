@@ -115,7 +115,7 @@ public class PluginListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (!main.commands.worldBorderModified && main.getConfig().getBoolean("preGameWorldBorder", false)) {
             Location joinLoc = event.getPlayer().getLocation();
-            WorldBorder wb = main.world.getWorldBorder();
+            WorldBorder wb = main.getWorld().getWorldBorder();
 
             wb.setDamageAmount(0);
             wb.setWarningDistance(0);
