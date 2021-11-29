@@ -48,7 +48,7 @@ public class PluginListener implements Listener {
                 }
                 return;
             }
-            if(main.runners.contains(player.getName()) && !main.debugMode){
+            if(main.runners.contains(player) && !main.debugMode){
                 player.sendMessage("Speedrunners cannot use the compass!");
                 return;
             }
@@ -129,10 +129,10 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
         if(main.commands.gameIsRunning){
-            if (main.hunters.contains(event.getPlayer().getName())) {
+            if (main.hunters.contains(event.getPlayer())) {
                 respawnHunter(event.getPlayer());
             }
-            else if (main.runners.contains(event.getPlayer().getName())) {
+            else if (main.runners.contains(event.getPlayer())) {
                 respawnRunner(event.getPlayer());
             }
         }
@@ -146,11 +146,11 @@ public class PluginListener implements Listener {
     public void onEntityDeath(EntityDeathEvent event){
         Entity entity = event.getEntity();
         if (entity.getType().equals(EntityType.ENDER_DRAGON)){
-            for (String string : main.hunters){
-                Bukkit.getPlayer(string).sendTitle(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "YOU LOSE!", "You're gay!", 20, 60, 20);
+            for (Player player : main.hunters){
+                player.sendTitle(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "YOU LOSE!", "You're gay!", 20, 60, 20);
             }
-            for (String string : main.runners){
-                Bukkit.getPlayer(string).sendTitle(ChatColor.GREEN.toString() + ChatColor.BOLD + "YOU WIN!", ChatColor.MAGIC + "Now go have sex!", 20, 60, 20);
+            for (Player player : main.runners){
+                player.sendTitle(ChatColor.GREEN.toString() + ChatColor.BOLD + "YOU WIN!", ChatColor.MAGIC + "Now go have sex!", 20, 60, 20);
             }
         }
     }
@@ -159,11 +159,11 @@ public class PluginListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) throws InterruptedException {
         if (main.commands.gameIsRunning) {
             // If hunter is killed
-            if (main.hunters.contains(event.getEntity().getName())) {
+            if (main.hunters.contains(event.getEntity())) {
                 event.getDrops().removeIf(i -> i.getType() == Material.COMPASS);
-                if (main.runners.contains(event.getEntity().getKiller().getPlayer().getName())) { // If runner is killer
+                if (main.runners.contains(event.getEntity().getKiller().getPlayer())) { // If runner is killer
                     Player killer = Bukkit.getPlayer(event.getEntity().getKiller().getName());
-                    main.hunterDeaths.put(event.getEntity().getPlayer().getName(), main.hunterDeaths.get(event.getEntity().getPlayer().getName()) + 1); // Increases death total for hunter
+                    main.hunterDeaths.put(event.getEntity().getPlayer(), main.hunterDeaths.get(event.getEntity().getPlayer()) + 1); // Increases death total for hunter
                     if (main.commands.runnerHelp) {
                         killer.getPlayer().setMaxHealth(event.getEntity().getKiller().getMaxHealth() + 2.0);
                         killer.getPlayer().setHealthScale((event.getEntity().getKiller().getHealthScale() + 2.0));
@@ -174,9 +174,9 @@ public class PluginListener implements Listener {
                 }
             }
             // If runner is killed
-            if (main.runners.contains(event.getEntity().getName())){
-                if (main.hunters.contains(event.getEntity().getKiller().getName())){ // If hunter is killer
-                    main.runnerDeaths.put(event.getEntity().getPlayer().getName(), main.runnerDeaths.get(event.getEntity().getPlayer().getName())+1); // Increases death total for runner
+            if (main.runners.contains(event.getEntity())){
+                if (main.hunters.contains(event.getEntity().getKiller())){ // If hunter is killer
+                    main.runnerDeaths.put(event.getEntity().getPlayer(), main.runnerDeaths.get(event.getEntity().getPlayer())+1); // Increases death total for runner
                 }
             }
         }

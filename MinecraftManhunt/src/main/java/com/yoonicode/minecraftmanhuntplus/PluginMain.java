@@ -16,21 +16,24 @@ import java.util.logging.Logger;
 import static org.bukkit.Bukkit.getScoreboardManager;
 
 public class PluginMain extends JavaPlugin {
-    public ArrayList<String> hunters = new ArrayList<String>();
-    public ArrayList<String> runners = new ArrayList<String>();
-    public ArrayList<String> spectators = new ArrayList<String>();
+    public ArrayList<Player> hunters = new ArrayList<Player>();
+    public ArrayList<Player> runners = new ArrayList<Player>();
+    public ArrayList<Player> spectators = new ArrayList<Player>();
     public HashMap<String, String> targets = new HashMap<String, String>();
     public HashMap<String, Location> portals = new HashMap<String, Location>();
     public Logger logger;
     public World world;
     public PluginCommands commands;
     public boolean debugMode = false;
-    public HashMap<String, Integer> hunterDeaths = new HashMap<>();
-    public HashMap<String, Integer> runnerDeaths = new HashMap<>();
+    boolean compassEnabledInNether;
+    public HashMap<Player, Integer> hunterDeaths = new HashMap<>();
+    public HashMap<Player, Integer> runnerDeaths = new HashMap<>();
+    private TaskManager taskManager = new TaskManager(this);
 
     public boolean playerIsOnTeam(Player player){
-        String name = player.getName();
-        return hunters.contains(name) || runners.contains(name) || spectators.contains(name);
+        return hunters.stream().anyMatch(member->member.getName().equals(player.getName()))
+                || runners.stream().anyMatch(member->member.getName().equals(player.getName()))
+                || spectators.stream().anyMatch(member->member.getName().equals(player.getName()));
     }
 
     @Override
@@ -40,6 +43,7 @@ public class PluginMain extends JavaPlugin {
         logger.info("Minecraft Manhunt plugin enabled!");
         saveDefaultConfig();
         debugMode = getConfig().getBoolean("debugMode", false);
+        compassEnabledInNether = getConfig().getBoolean("compassEnabledInNether", true);
         getServer().getPluginManager().registerEvents(new PluginListener(this), this);
 
         commands = new PluginCommands(this);
@@ -56,6 +60,8 @@ public class PluginMain extends JavaPlugin {
         }
         world = worlds.get(0);
 
+
+
     }
 
     public World getWorld() {
@@ -66,6 +72,10 @@ public class PluginMain extends JavaPlugin {
     @Override
     public void onDisable() {
         logger.info("Minecraft Manhunt plugin disabled!");
+    }
+
+    public TaskManager getTaskManager() {
+        return taskManager;
     }
 
 }
