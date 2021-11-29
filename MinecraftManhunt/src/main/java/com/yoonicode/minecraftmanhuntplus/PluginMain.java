@@ -27,7 +27,6 @@ public class PluginMain extends JavaPlugin {
     public boolean debugMode = false;
     public HashMap<String, Integer> hunterDeaths = new HashMap<>();
     public HashMap<String, Integer> runnerDeaths = new HashMap<>();
-    public CommandHandler gameState;
 
     public boolean playerIsOnTeam(Player player){
         String name = player.getName();
