@@ -4,20 +4,15 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.CompassMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PluginCommands implements CommandExecutor {
@@ -34,7 +29,8 @@ public class PluginCommands implements CommandExecutor {
             "runnerhelp",
             "hunterhelp",
             "extradrops",
-            "chestgenerate"
+            "chestgenerate",
+            "allhelp"
     };
     public boolean hitHasRegistered; // used for startGameByHit option
     public boolean extraDrops;
@@ -60,27 +56,14 @@ public class PluginCommands implements CommandExecutor {
             case "/hunter":
             case "/runner":
             case "/spectator": {
-                return Bukkit.getOnlinePlayers().stream().map(i -> i.getName()).collect(Collectors.toList());
-            }
-            case "/music": {
-                ArrayList<String> ret = new ArrayList<String>(){
-                    {
-                        add("auto");
-                        add("stop");
-                        add("list");
-                        add("forceupdate");
-                    }
-                };
-//                for(String track : main.discord.trackManager.trackURLs.keySet()){
-//                    ret.add(track);
-//                }
-                return ret;
+                return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
             }
             case "/start":
             case "/end":
             case "/chestgenerate":
             case "/compass":
             case "/clearteams":
+            case "/allhelp":
                 return new ArrayList<String>();
             case "/setheadstart": {
                 ArrayList<String> ret = new ArrayList<String>(){
@@ -107,10 +90,10 @@ public class PluginCommands implements CommandExecutor {
                 return false;
             }
             if (isOnTargetTeam(commandSender, target, main.hunters)) return true;
-            removeFromTeam(target, main.runners);
-            removeFromTeam(target, main.spectators);
-            main.hunters.add(target.getName());
-            main.hunterDeaths.put(target.getName(),0);
+            main.runners.remove(target);
+            main.spectators.remove(target);
+            main.hunters.add(target);
+            main.hunterDeaths.put(target,0);
             Bukkit.broadcastMessage(target.getName() + " is now a " + ChatColor.RED + ChatColor.BOLD + "HUNTER!");
             return true;
         }
@@ -122,10 +105,10 @@ public class PluginCommands implements CommandExecutor {
                 return false;
             }
             if (isOnTargetTeam(commandSender, target, main.runners)) return true;
-            removeFromTeam(target, main.hunters);
-            removeFromTeam(target, main.spectators);
-            main.runners.add(target.getName());
-            main.runnerDeaths.put(target.getName(),0);
+            main.hunters.remove(target);
+            main.spectators.remove(target);
+            main.runners.add(target);
+            main.runnerDeaths.put(target,0);
 
             Bukkit.broadcastMessage(target.getName() + " is now a " + ChatColor.GREEN + ChatColor.BOLD + "RUNNER!");
             return true;
@@ -138,9 +121,9 @@ public class PluginCommands implements CommandExecutor {
                 return false;
             }
             if (isOnTargetTeam(commandSender, target, main.spectators)) return true;
-            removeFromTeam(target, main.runners);
-            removeFromTeam(target, main.hunters);
-            main.spectators.add(target.getName());
+            main.runners.remove(target);
+            main.hunters.remove(target);
+            main.spectators.add(target);
             target.sendMessage("You have been marked as a spectator.");
             commandSender.sendMessage("Marked player as spectator");
             return true;
@@ -299,23 +282,12 @@ public class PluginCommands implements CommandExecutor {
 
     }
 
-    private boolean isOnTargetTeam(CommandSender commandSender, Player target, ArrayList<String> team) {
-        for (String i : team) {
-            if (target.getName().equalsIgnoreCase(i)) {
-                commandSender.sendMessage("Target is already on this team");
-                return true;
-            }
+    private boolean isOnTargetTeam(CommandSender commandSender, Player target, ArrayList<Player> team) {
+        if (team.stream().anyMatch(player -> player.getName().equals(target.getName()))){
+            commandSender.sendMessage("Target is already on this team");
+            return true;
         }
         return false;
-    }
-
-    private void removeFromTeam(Player target, ArrayList<String> team) {
-        for (String i : team) {
-            if (target.getName().equalsIgnoreCase(i)) {
-                team.remove(i);
-                break;
-            }
-        }
     }
 
     private void sendStartMessage() {
@@ -328,8 +300,7 @@ public class PluginCommands implements CommandExecutor {
     }
 
     private void huntersState(int headStartDuration) {
-        for (String i : main.hunters) {
-            Player player = Bukkit.getPlayer(i);
+        for (Player player : main.hunters) {
             if (player == null) continue;
             player.setGameMode(GameMode.SURVIVAL);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * headStartDuration, 5));
@@ -350,8 +321,7 @@ public class PluginCommands implements CommandExecutor {
     }
 
     private void runnersState() {
-        for (String i : main.runners) {
-            Player player = Bukkit.getPlayer(i);
+        for (Player player : main.runners) {
             if (player == null) continue;
             player.setGameMode(GameMode.SURVIVAL);
             player.setHealthScale(20.0);
@@ -371,8 +341,7 @@ public class PluginCommands implements CommandExecutor {
     }
 
     private void updateSpectators() {
-        for (String i : main.spectators) {
-            Player player = Bukkit.getPlayer(i);
+        for (Player player : main.spectators) {
             if (player == null) continue;
             player.setGameMode(GameMode.SPECTATOR);
         }

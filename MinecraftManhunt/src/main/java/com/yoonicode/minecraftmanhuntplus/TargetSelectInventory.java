@@ -21,8 +21,7 @@ public class TargetSelectInventory {
         this.main = main;
         inv = Bukkit.createInventory(null, 9, INVENTORY_NAME);
         int pos = 0;
-        for(String i : main.runners){
-            Player runner = Bukkit.getPlayer(i);
+        for(Player runner : main.runners){
             if(runner == null) continue;
             ItemStack stack = new ItemStack(Material.PLAYER_HEAD, 1);
             SkullMeta meta = (SkullMeta) stack.getItemMeta();
