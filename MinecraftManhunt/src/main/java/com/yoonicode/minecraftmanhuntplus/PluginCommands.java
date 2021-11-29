@@ -175,11 +175,7 @@ public class PluginCommands implements CommandExecutor {
                 }
             }
             main.hunters.add(target.getName());
-//            main.huntersTeam.addEntry(target.getName());
             main.hunterDeaths.put(target.getName(),0);
-//            if(!main.discord.assignRole(ManhuntTeam.HUNTER, target.getName())){
-//                commandSender.sendMessage("Could not assign Discord role. Make sure the target's username is also their Discord nickname.");
-//            }
             Bukkit.broadcastMessage(target.getName() + " is now a " + ChatColor.RED + ChatColor.BOLD + "HUNTER!");
             return true;
         } else if ("runner".equals(label))
@@ -210,10 +206,6 @@ public class PluginCommands implements CommandExecutor {
             }
             main.runners.add(target.getName());
             main.runnerDeaths.put(target.getName(),0);
-//            main.runnersTeam.addEntry(target.getName());
-//            if(!main.discord.assignRole(ManhuntTeam.RUNNER, target.getName())){
-//                commandSender.sendMessage("Could not assign Discord role. Make sure the target's username is also their Discord nickname.");
-//            }
 
             Bukkit.broadcastMessage(target.getName() + " is now a " + ChatColor.GREEN + ChatColor.BOLD + "RUNNER!");
             return true;
@@ -244,14 +236,10 @@ public class PluginCommands implements CommandExecutor {
                 }
             }
             main.spectators.add(target.getName());
-//            main.spectatorsTeam.addEntry(target.getName());
-//            if(!main.discord.assignRole(ManhuntTeam.SPECTATOR, target.getName())){
-//                commandSender.sendMessage("Could not assign Discord role. Make sure the target's username is also their Discord nickname.");
-//            }
             target.sendMessage("You have been marked as a spectator.");
             commandSender.sendMessage("Marked player as spectator");
             return true;
-        } else if ("start".equals(label))
+        } else if ("start".equals(label)) // todo; Gamestate.trigger()
         {
             if(gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Use /end before starting another game.");
@@ -270,16 +258,6 @@ public class PluginCommands implements CommandExecutor {
             commandSender.sendMessage("Starting game...");
             main.targets.clear();
             int headStartDuration = main.getConfig().getInt("headStartDuration");
-
-//            for(String i : main.spectatorsTeam.getEntries()){
-//                main.spectatorsTeam.removeEntry(i);
-//            }
-//            for(String i : main.huntersTeam.getEntries()){
-//                main.huntersTeam.removeEntry(i);
-//            }
-//            for(String i : main.runnersTeam.getEntries()){
-//                main.runnersTeam.removeEntry(i);
-//            }
 
             if (main.getConfig().getBoolean("clearItemDropsOnStart", false)) {
                 commandSender.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:kill @e[type=item]");
@@ -302,10 +280,6 @@ public class PluginCommands implements CommandExecutor {
                 Player player = Bukkit.getPlayer(i);
                 if (player == null) continue;
                 player.setGameMode(GameMode.SPECTATOR);
-//                main.spectatorsTeam.addEntry(player.getName());
-//                if(!main.discord.assignRole(ManhuntTeam.SPECTATOR, player.getName())){
-//                    commandSender.sendMessage("Could not assign Discord role. Make sure the target's username is also their Discord nickname.");
-//                }
             }
             for (String i : main.runners) {
                 Player player = Bukkit.getPlayer(i);
@@ -324,10 +298,6 @@ public class PluginCommands implements CommandExecutor {
                     player.setLevel(0);
                 }
 
-//                main.runnersTeam.addEntry(player.getName());
-//                if(!main.discord.assignRole(ManhuntTeam.RUNNER, player.getName())){
-//                    commandSender.sendMessage("Could not assign Discord role. Make sure the target's username is also their Discord nickname.");
-//                }
             }
             for (String i : main.hunters) {
                 Player player = Bukkit.getPlayer(i);
@@ -346,10 +316,7 @@ public class PluginCommands implements CommandExecutor {
                 }
 
                 player.getInventory().addItem(new ItemStack(Material.COMPASS, 1));
-//                main.huntersTeam.addEntry(player.getName());
-//                if(!main.discord.assignRole(ManhuntTeam.HUNTER, player.getName())){
-//                    commandSender.sendMessage("Could not assign Discord role. Make sure the target's username is also their Discord nickname.");
-//                }
+
             }
             BukkitScheduler scheduler = Bukkit.getScheduler();
             compassTask = scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
@@ -358,29 +325,7 @@ public class PluginCommands implements CommandExecutor {
                 }
             }, 0L, 20L);
 
-//            if(main.discord.enabled) {
-//                dangerLevelTask = scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
-//                    public void run() {
-//                        main.discord.trackManager.updateDangerLevel();
-//                    }
-//                }, 0L, 20L * 5);
-//            }
-
-//            JsonObjectBuilder eventParams = Json.createObjectBuilder()
-//                    .add("num_hunters", main.hunters.size())
-//                    .add("num_runners", main.runners.size())
-//                    .add("num_spectators", main.spectators.size())
-//                    .add("headstart_duration", headStartDuration)
-//                    .add("discord_enabled", main.discord.enabled)
-//                    .add("plugin_version", main.getDescription().getVersion())
-//                    .add("server_version", Bukkit.getBukkitVersion());
-//            main.analytics.sendEvent("game_start", eventParams);
             gameIsRunning = true;
-
-//            if(main.discord.enabled){
-//                main.discord.trackManager.reset();
-//                main.discord.trackManager.playSpecialTrack("headstart", true);
-//            }
 
             Bukkit.broadcastMessage(
                     ChatColor.DARK_RED.toString() + ChatColor.UNDERLINE + "Berner er gay!" + ChatColor.RESET + "\n" +
@@ -421,13 +366,10 @@ public class PluginCommands implements CommandExecutor {
             return true;
         }else if("music".equals(label))
         {
-//            if (!main.discord.enabled) {
-//                commandSender.sendMessage("Cannot use this command when Discord is disabled.");
-//            }
+
             if (args.length == 0) {
                 return false;
             }
-//            commandSender.sendMessage(main.discord.trackManager.parseCommand(args[0]));
             return true;
         } else if("clearteams".equals(label))
         {
@@ -488,18 +430,6 @@ public class PluginCommands implements CommandExecutor {
     }
 
     public String clearTeams(){
-//        for(String i : main.hunters){
-////            main.huntersTeam.removeEntry(i);
-//            main.discord.removeRoles(i);
-//        }
-//        for(String i : main.spectators){
-////            main.spectatorsTeam.removeEntry(i);
-//            main.discord.removeRoles(i);
-//        }
-//        for(String i : main.runners) {
-////            main.runnersTeam.removeEntry(i);
-//            main.discord.removeRoles(i);
-//        }
         int playersCleared = main.hunters.size() + main.spectators.size() + main.runners.size();
         main.hunters.clear();
         main.spectators.clear();

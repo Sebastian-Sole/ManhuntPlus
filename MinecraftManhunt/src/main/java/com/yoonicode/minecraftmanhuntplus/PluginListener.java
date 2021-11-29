@@ -6,7 +6,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,10 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitScheduler;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -130,22 +126,6 @@ public class PluginListener implements Listener {
         }
     }
 
-//    @EventHandler
-//    public void onPlayerHit(EntityDamageByEntityEvent event) {
-//        if (!main.commands.gameIsRunning && main.getConfig().getBoolean("startGameByHit", false)) {
-//            Entity victim = event.getEntity();
-//            Entity attacker = event.getDamager();
-//            EntityDamageEvent.DamageCause cause = event.getCause();
-//            if (attacker.getType() == EntityType.PLAYER && victim.getType() == EntityType.PLAYER
-//                    && cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK
-//                    && main.huntersTeam.getEntries().contains(victim.getName())
-//                    && main.runnersTeam.getEntries().contains(attacker.getName())) {
-//                main.commands.hitHasRegistered = true;
-//                attacker.getServer().dispatchCommand(getServer().getConsoleSender(), "start");
-//            }
-//        }
-//    }
-
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
         if(main.commands.gameIsRunning){
@@ -159,16 +139,6 @@ public class PluginListener implements Listener {
         else{
             main.logger.info("Game isn't running");
         }
-//        if(setRunnersToSpecOnDeath && main.commands.gameIsRunning && main.runners.contains(event.getPlayer().getName())){
-//            BukkitScheduler scheduler = Bukkit.getScheduler();
-//            scheduler.scheduleSyncDelayedTask(main, new Runnable() {
-//                @Override
-//                public void run() {
-//                    main.logger.info("Setting player to gamemode spectator");
-//                    event.getPlayer().setGameMode(GameMode.SPECTATOR);
-//                }
-//            }, 20L * 1); // Wait a bit before setting to spectator to prevent a race condition
-//        }
     }
 
 
