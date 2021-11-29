@@ -25,8 +25,10 @@ public class PluginMain extends JavaPlugin {
     public World world;
     public PluginCommands commands;
     public boolean debugMode = false;
+    boolean compassEnabledInNether;
     public HashMap<String, Integer> hunterDeaths = new HashMap<>();
     public HashMap<String, Integer> runnerDeaths = new HashMap<>();
+    private TaskManager taskManager = new TaskManager(this);
 
     public boolean playerIsOnTeam(Player player){
         String name = player.getName();
@@ -40,6 +42,7 @@ public class PluginMain extends JavaPlugin {
         logger.info("Minecraft Manhunt plugin enabled!");
         saveDefaultConfig();
         debugMode = getConfig().getBoolean("debugMode", false);
+        compassEnabledInNether = getConfig().getBoolean("compassEnabledInNether", true);
         getServer().getPluginManager().registerEvents(new PluginListener(this), this);
 
         commands = new PluginCommands(this);
@@ -56,6 +59,8 @@ public class PluginMain extends JavaPlugin {
         }
         world = worlds.get(0);
 
+
+
     }
 
     public World getWorld() {
@@ -68,4 +73,7 @@ public class PluginMain extends JavaPlugin {
         logger.info("Minecraft Manhunt plugin disabled!");
     }
 
+    public TaskManager getTaskManager() {
+        return taskManager;
+    }
 }

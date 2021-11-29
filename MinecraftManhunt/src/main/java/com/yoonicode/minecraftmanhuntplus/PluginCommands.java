@@ -43,7 +43,7 @@ public class PluginCommands implements CommandExecutor {
     int compassTask = -1;
     int dangerLevelTask = -1;
     public boolean gameIsRunning = false;
-    boolean compassEnabledInNether;
+
     boolean worldBorderModified;
     private final PluginMain main;
     public boolean runnerHelp = false;
@@ -51,55 +51,9 @@ public class PluginCommands implements CommandExecutor {
 
     public PluginCommands(PluginMain main) {
         this.main = main;
-        compassEnabledInNether = main.getConfig().getBoolean("compassEnabledInNether", true);
     }
 
-    public void UpdateCompass(){
-        for(Map.Entry<String, String> i : main.targets.entrySet()){
-            Player hunter = Bukkit.getPlayer(i.getKey());
-            Player target = Bukkit.getPlayer(i.getValue());
-            if(hunter == null || target == null){
-                continue;
-            }
-            if(!main.playerIsOnTeam(hunter)){
-                continue;
-            }
-            PlayerInventory inv = hunter.getInventory();
 
-            if(hunter.getWorld().getEnvironment() != target.getWorld().getEnvironment()){
-                Location loc = main.portals.get(target.getName());
-                if(loc != null){
-                    hunter.setCompassTarget(loc);
-                }
-                for (int j = 0; j < inv.getSize(); j++) {
-                    ItemStack stack = inv.getItem(j);
-                    if (stack == null) continue;
-                    if (stack.getType() != Material.COMPASS) continue;
-
-                    stack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1); // Make all compasses glow
-
-                    ItemMeta meta = stack.getItemMeta();
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    stack.setItemMeta(meta);
-                }
-            }else{
-                hunter.setCompassTarget(target.getLocation());
-
-                if(compassEnabledInNether) {
-                    for (int j = 0; j < inv.getSize(); j++) {
-                        ItemStack stack = inv.getItem(j);
-                        if (stack == null) continue;
-                        if (stack.getType() != Material.COMPASS) continue;
-
-                        CompassMeta meta = (CompassMeta) stack.getItemMeta();
-                        meta.setLodestone(target.getLocation());
-                        meta.setLodestoneTracked(false);
-                        stack.setItemMeta(meta);
-                    }
-                }
-            }
-        }
-    }
 
     public List<String> getCompletions(String[] args, List<String> existingCompletions){
         switch (args[0]){
@@ -213,7 +167,7 @@ public class PluginCommands implements CommandExecutor {
             BukkitScheduler scheduler = Bukkit.getScheduler();
             compassTask = scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
                 public void run() {
-                    UpdateCompass();
+                    main.getTaskManager().updateCompass();
                 }
             }, 0L, 20L);
 
