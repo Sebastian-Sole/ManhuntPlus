@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,13 +14,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static org.bukkit.Bukkit.getScoreboardManager;
-import static org.bukkit.ChatColor.getByChar;
-
-enum ManhuntTeam {
-    HUNTER,
-    RUNNER,
-    SPECTATOR
-}
 
 public class PluginMain extends JavaPlugin {
     public ArrayList<String> hunters = new ArrayList<String>();
@@ -30,14 +21,9 @@ public class PluginMain extends JavaPlugin {
     public ArrayList<String> spectators = new ArrayList<String>();
     public HashMap<String, String> targets = new HashMap<String, String>();
     public HashMap<String, Location> portals = new HashMap<String, Location>();
-//    public Team huntersTeam;
-//    public Team runnersTeam;
-//    public Team spectatorsTeam;
     public Logger logger;
     public World world;
-//    public DiscordManager discord;
     public PluginCommands commands;
-//    public AnalyticsManager analytics;
     public boolean debugMode = false;
     public HashMap<String, Integer> hunterDeaths = new HashMap<>();
     public HashMap<String, Integer> runnerDeaths = new HashMap<>();
@@ -63,22 +49,6 @@ public class PluginMain extends JavaPlugin {
 
         ScoreboardManager scoreboardManager = getScoreboardManager();
         Scoreboard board = scoreboardManager.getMainScoreboard();
-//        huntersTeam = board.getTeam("hunters");
-//        runnersTeam = board.getTeam("speedrunners");
-//        spectatorsTeam = board.getTeam("spectators");
-//
-//        if(huntersTeam == null){
-//            huntersTeam = board.registerNewTeam("hunters");
-//            huntersTeam.setColor(getByChar(getConfig().getString("huntersColor", "&c").replace("&", "")));
-//        }
-//        if(runnersTeam == null){
-//            runnersTeam = board.registerNewTeam("speedrunners");
-//            runnersTeam.setColor(getByChar(getConfig().getString("runnersColor", "&a").replace("&", "")));
-//        }
-//        if(spectatorsTeam == null){
-//            spectatorsTeam = board.registerNewTeam("spectators");
-//            spectatorsTeam.setColor(getByChar(getConfig().getString("spectatorsColor", "&b").replace("&", "")));
-//        }
 
         List<World> worlds = Bukkit.getWorlds();
         if(worlds.size() < 1){
@@ -86,8 +56,6 @@ public class PluginMain extends JavaPlugin {
         }
         world = worlds.get(0);
 
-//        discord = new DiscordManager(this);
-//        analytics = new AnalyticsManager(this);
     }
 
     public World getWorld() {
