@@ -67,8 +67,8 @@ public class ItemGenerator {
             new ChestItem(Material.DIAMOND_PICKAXE,pickaxeEnchantments),
             new ChestItem(Material.DIAMOND,random.nextInt(3)+1),
             new ChestItem(Material.DIAMOND_SWORD,swordEncants),
-            new ChestItem(Material.ENDER_PEARL, random.nextInt(3)+3)
-            //todo; add potions
+            new ChestItem(Material.ENDER_PEARL, random.nextInt(3)+3),
+            new ChestItem(true)
             ));
     private final ArrayList<ChestItem> tierTwo = new ArrayList<>(Arrays.asList(
             new ChestItem(Material.IRON_CHESTPLATE, mainArmorEnchants),
