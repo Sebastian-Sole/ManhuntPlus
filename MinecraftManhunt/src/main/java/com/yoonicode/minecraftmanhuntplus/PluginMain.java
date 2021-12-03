@@ -3,6 +3,7 @@ package com.yoonicode.minecraftmanhuntplus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
@@ -41,27 +42,21 @@ public class PluginMain extends JavaPlugin {
         logger = Logger.getLogger("com.yoonicode.minecraftmanhuntplus.PluginMain");
         logger = getLogger();
         logger.info("Minecraft Manhunt plugin enabled!");
-        saveDefaultConfig();
-        debugMode = getConfig().getBoolean("debugMode", false);
-        compassEnabledInNether = getConfig().getBoolean("compassEnabledInNether", true);
-        getServer().getPluginManager().registerEvents(new PluginListener(this), this);
-
-        commands = new PluginCommands(this);
-        for(String command : PluginCommands.registeredCommands){
-            this.getCommand(command).setExecutor(commands);
-        }
-
-        ScoreboardManager scoreboardManager = getScoreboardManager();
-        Scoreboard board = scoreboardManager.getMainScoreboard();
-
         List<World> worlds = Bukkit.getWorlds();
         if(worlds.size() < 1){
             logger.warning("Could not detect main world! Plugin will not work.");
         }
         world = worlds.get(0);
-
-
-
+        saveDefaultConfig();
+        debugMode = getConfig().getBoolean("debugMode", false);
+        compassEnabledInNether = getConfig().getBoolean("compassEnabledInNether", true);
+        getServer().getPluginManager().registerEvents(new PluginListener(this), this);
+        commands = new PluginCommands(this);
+        for(String command : PluginCommands.registeredCommands){
+            this.getCommand(command).setExecutor(commands);
+        }
+        ScoreboardManager scoreboardManager = getScoreboardManager();
+        Scoreboard board = scoreboardManager.getMainScoreboard();
     }
 
     public World getWorld() {

@@ -1,5 +1,6 @@
 package com.yoonicode.minecraftmanhuntplus;
 
+import com.yoonicode.minecraftmanhuntplus.item_randomizer.ChestRandomizer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -115,7 +116,7 @@ public class PluginListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (!main.commands.worldBorderModified && main.getConfig().getBoolean("preGameWorldBorder", false)) {
             Location joinLoc = event.getPlayer().getLocation();
-            WorldBorder wb = main.world.getWorldBorder();
+            WorldBorder wb = main.getWorld().getWorldBorder();
 
             wb.setDamageAmount(0);
             wb.setWarningDistance(0);
@@ -188,9 +189,9 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
         if (main.commands.chestGenerate) {
-            Location blockBrokenLocation = event.getBlock().getLocation();
-            int numberGenerated = this.random.nextInt(750);
+            int numberGenerated = this.random.nextInt(550);
             if (numberGenerated == 69) {
+                Location blockBrokenLocation = event.getBlock().getLocation();
                 createChest(blockBrokenLocation, event);
             }
         }
@@ -202,312 +203,13 @@ public class PluginListener implements Listener {
         event.setCancelled(true);
         Chest chest = (Chest) block.getState();
         Inventory inv = chest.getInventory();
-        var itemsList = generateChestItems();
+        var itemsList = ChestRandomizer.generateItems();
         for (ItemStack stack : itemsList){
             inv.addItem(stack);
         }
     }
 
-    private ArrayList<ItemStack> generateChestItems() {
-        ArrayList<ItemStack> itemsToAddToChest = new ArrayList<>();
-        int numberOfItemsToAdd = random.nextInt(8)+1;
-        for (int i = 0; i < numberOfItemsToAdd; i++){ //Generate that amount of random items
-            int generatedNumber = random.nextInt(164)+1;
-            int enchantmentType = random.nextInt(3)+1;
-            int bookEnchantmentType = random.nextInt(10)+1;
-            boolean shouldEnchant = false;
-            int enchantLevel = random.nextInt(3);
-            if (enchantLevel != 0) {
-                shouldEnchant = true;
-            }
-            switch (generatedNumber){
-                // Diamond Boots
-                case 1,2  -> {
-                    var item = new ItemStack(Material.DIAMOND_HELMET);
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel);
-                            case 2 -> item.addEnchantment(Enchantment.PROTECTION_FIRE, enchantLevel);
-                            case 3 -> item.addEnchantment(Enchantment.PROTECTION_EXPLOSIONS, enchantLevel);
-                            case 4 -> item.addEnchantment(Enchantment.OXYGEN, enchantLevel);
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Diamond Leggings
-                case 3 -> {
-                    var item = new ItemStack(Material.DIAMOND_LEGGINGS);
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel);
-                            case 2 -> item.addEnchantment(Enchantment.PROTECTION_FIRE, enchantLevel);
-                            case 3 -> item.addEnchantment(Enchantment.PROTECTION_EXPLOSIONS, enchantLevel);
-                            case 4 -> item.addEnchantment(Enchantment.PROTECTION_PROJECTILE, enchantLevel);
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Diamond Chestplate
-                case 5 -> {
-                    var item = new ItemStack(Material.DIAMOND_CHESTPLATE);
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel);
-                            case 2 -> item.addEnchantment(Enchantment.PROTECTION_FIRE, enchantLevel);
-                            case 3 -> item.addEnchantment(Enchantment.PROTECTION_EXPLOSIONS, enchantLevel);
-                            case 4 -> item.addEnchantment(Enchantment.PROTECTION_PROJECTILE, enchantLevel);
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Diamond Boots
-                case 7,8 -> {
-                    var item = new ItemStack(Material.DIAMOND_BOOTS);
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel);
-                            case 2 -> item.addEnchantment(Enchantment.SOUL_SPEED, enchantLevel);
-                            case 3 -> item.addEnchantment(Enchantment.FROST_WALKER, enchantLevel);
-                            case 4 -> item.addEnchantment(Enchantment.DEPTH_STRIDER, enchantLevel);
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Iron Helmet
-                case 9,10,11,77,128 -> {
-                    var item = new ItemStack(Material.IRON_HELMET);
-                    if (enchantLevel == 2){
-                        enchantLevel--;
-                    }
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel + random.nextInt(2));
-                            case 2 -> item.addEnchantment(Enchantment.PROTECTION_FIRE, enchantLevel + random.nextInt(2));
-                            case 3 -> item.addEnchantment(Enchantment.PROTECTION_EXPLOSIONS, enchantLevel + random.nextInt(2));
-                            case 4 -> item.addEnchantment(Enchantment.OXYGEN, enchantLevel + random.nextInt(2));
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Iron Chestplate
-                case 12,13,102,129 -> {
-                    var item = new ItemStack(Material.IRON_CHESTPLATE);
-                    if (enchantLevel == 2){
-                        enchantLevel--;
-                    }
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel + random.nextInt(2));
-                            case 2 -> item.addEnchantment(Enchantment.PROTECTION_FIRE, enchantLevel + random.nextInt(2));
-                            case 3 -> item.addEnchantment(Enchantment.PROTECTION_EXPLOSIONS, enchantLevel + random.nextInt(2));
-                            case 4 -> item.addEnchantment(Enchantment.PROTECTION_PROJECTILE, enchantLevel + random.nextInt(2));
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Iron Leggings
-                case 14,15,101,130 -> {
-                    var item = new ItemStack(Material.IRON_LEGGINGS);
-                    if (enchantLevel == 2){
-                        enchantLevel--;
-                    }
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel + random.nextInt(2));
-                            case 2 -> item.addEnchantment(Enchantment.PROTECTION_FIRE, enchantLevel + random.nextInt(2));
-                            case 3 -> item.addEnchantment(Enchantment.PROTECTION_EXPLOSIONS, enchantLevel + random.nextInt(2));
-                            case 4 -> item.addEnchantment(Enchantment.PROTECTION_PROJECTILE, enchantLevel + random.nextInt(2));
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Iron Boots
-                case 16,17,18,78,131 -> {
-                    var item = new ItemStack(Material.IRON_CHESTPLATE);
-                    if (enchantLevel == 2){
-                        enchantLevel--;
-                    }
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, enchantLevel + random.nextInt(2));
-                            case 2 -> item.addEnchantment(Enchantment.FROST_WALKER, enchantLevel + random.nextInt(2));
-                            case 3 -> item.addEnchantment(Enchantment.SOUL_SPEED, enchantLevel + random.nextInt(2));
-                            case 4 -> item.addEnchantment(Enchantment.DEPTH_STRIDER, enchantLevel + random.nextInt(2));
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Diamond Pickaxe
-                case 19,20,132,133 -> {
-                    var item = new ItemStack(Material.DIAMOND_PICKAXE);
-                    if (shouldEnchant) {
-                        switch (enchantmentType) {
-                            case 1 -> item.addEnchantment(Enchantment.DIG_SPEED, enchantLevel);
-                            case 2 -> item.addEnchantment(Enchantment.LOOT_BONUS_BLOCKS, enchantLevel);
-                            case 3 -> item.addEnchantment(Enchantment.MENDING, 1);
-                            case 4 -> item.addEnchantment(Enchantment.DURABILITY, enchantLevel);
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Diamond Sword
-                case 21,22,134 -> {
-                    var item = new ItemStack(Material.DIAMOND_PICKAXE);
-                    if (shouldEnchant) {
-                        if (enchantmentType == 1 || enchantmentType == 2) {
-                            item.addEnchantment(Enchantment.DIG_SPEED, 1);
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                // Golden Apples
-                case 23,24,25,79,103,135,136-> {
-                    var item = new ItemStack(Material.GOLDEN_APPLE, enchantmentType);
-                    itemsToAddToChest.add(item);
-                }
-                // Ender Pearl
-                case 26,27,28,80,81,104,105,137 -> {
-                    var item = new ItemStack(Material.ENDER_PEARL);
-                    itemsToAddToChest.add(item);
-                }
-                // Diamonds
-                case 29,30,31,138,139,140 -> {
-                    int numGen = random.nextInt(3)+1;
-                    var item = new ItemStack(Material.DIAMOND, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Iron
-                case 32,33,34,35,84,106,141 -> {
-                    int numGen = random.nextInt(9)+1;
-                    var item = new ItemStack(Material.IRON_INGOT, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Coal
-                case 36,37,38,39,86,87,107,108,142,143 -> {
-                    int numGen = random.nextInt(15)+1;
-                    var item = new ItemStack(Material.COAL, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Wood
-                case 40,41,42,43,88,89,109,110,144,147,148 -> {
-                    int numGen = random.nextInt(32)+1;
-                    var item = new ItemStack(Material.OAK_WOOD, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Steak
-                case 44,45,46,47,90,91,111,112,113,145,146 -> {
-                    int numGen = random.nextInt(15)+1;
-                    var item = new ItemStack(Material.COOKED_BEEF, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Anvil
-                case 48,49 -> {
-                    var item = new ItemStack(Material.ANVIL);
-                    itemsToAddToChest.add(item);
-                }
-                // Enchant Table
-                case 50,51 -> {
-                    var item = new ItemStack(Material.ENCHANTING_TABLE);
-                    itemsToAddToChest.add(item);
-                }
-                // Totem of Undying
-                case 52 -> {
-                    var item = new ItemStack(Material.TOTEM_OF_UNDYING);
-                    itemsToAddToChest.add(item);
-                }
-                // Bottle of Enchantment
-                case 53,54,55,92,93,114,115,116,149 -> {
-                    var item = new ItemStack(Material.EXPERIENCE_BOTTLE, 10);
-                    itemsToAddToChest.add(item);
-                }
-                // Gold Ingots
-                case 56,57,58,59,94,95,150,151,152,153 -> {
-                    int numGen = random.nextInt(15)+1;
-                    var item = new ItemStack(Material.GOLD_INGOT, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Diamond Ore
-                case 60,61,62,63,64 -> {
-                    int numGen = random.nextInt(2)+1;
-                    var item = new ItemStack(Material.DIAMOND_ORE, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Torches
-                case 65,66,67,68,96,97,117,118,119,154,155,156 -> {
-                    int numGen = random.nextInt(15)+1;
-                    var item = new ItemStack(Material.TORCH, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Shulker Box
-                case 69,124 -> {
-                    var item = new ItemStack(Material.SHULKER_BOX);
-                    itemsToAddToChest.add(item);
-                }
-                // Hay Block
-                case 70,71,72,73,98,99,120,121,122,123,157,158,159 -> {
-                    int numGen = random.nextInt(15)+1;
-                    var item = new ItemStack(Material.HAY_BLOCK, numGen);
-                    itemsToAddToChest.add(item);
-                }
-                // Enchanted Book
-                case 74,75,76,100,125 -> {
-                    var item = new ItemStack(Material.ENCHANTED_BOOK);
-                    if (shouldEnchant) {
-                        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-                        switch (bookEnchantmentType) {
-                            case 1 -> {
-                                meta.addStoredEnchant(Enchantment.DAMAGE_ALL, 1, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 2 -> {
-                                meta.addStoredEnchant(Enchantment.DEPTH_STRIDER, 1, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 3 -> {
-                                meta.addStoredEnchant(Enchantment.DURABILITY, enchantLevel, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 4 -> {
-                                meta.addStoredEnchant(Enchantment.PROTECTION_FALL, enchantLevel, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 5 -> {
-                                meta.addStoredEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 6 -> {
-                                meta.addStoredEnchant(Enchantment.ARROW_KNOCKBACK, enchantLevel, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 7 -> {
-                                meta.addStoredEnchant(Enchantment.DIG_SPEED, enchantLevel, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 8 -> {
-                                meta.addStoredEnchant(Enchantment.WATER_WORKER, enchantLevel, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 9 -> {
-                                meta.addStoredEnchant(Enchantment.LOOT_BONUS_BLOCKS, enchantLevel, true);
-                                item.setItemMeta(meta);
-                            }
-                            case 10 -> {
-                                meta.addStoredEnchant(Enchantment.FROST_WALKER, 1, true);
-                                item.setItemMeta(meta);
-                            }
-                        }
-                    }
-                    itemsToAddToChest.add(item);
-                }
-                default -> itemsToAddToChest.add(new ItemStack(Material.WHEAT_SEEDS, 42));
-            }
-        }
-        return itemsToAddToChest;
-    }
-
-
-
-
+    //todo: Make and inventory randomizer
     private void giveRandomDrop(Player player) {
         int generated = random.nextInt(35);
         switch (generated){
@@ -585,6 +287,7 @@ public class PluginListener implements Listener {
         }, 20L);
     }
 
+    // todo: abstract this code
     private void respawnHunter(Player player) {
         final String hunterName = player.getName();
         int giveKitID = getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
@@ -601,6 +304,7 @@ public class PluginListener implements Listener {
         }, 20L);
     }
 
+    // todo: abstract this code
     private void giveHunterItemsOnDeath(Player respawned) {
         switch (main.hunterDeaths.get(respawned.getPlayer().getName())){
             case 1 -> {
