@@ -4,8 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class ChestItem {
@@ -16,6 +21,17 @@ public class ChestItem {
     private Random random = new Random();
     private int enchantmentStrengths;
     private int enchantsGenerated = random.nextInt(2)+1;
+    private boolean isPotion;
+    private ArrayList<PotionType> potionTypes = new ArrayList<>(Arrays.asList(
+            PotionType.SPEED,
+            PotionType.FIRE_RESISTANCE,
+            PotionType.INSTANT_HEAL,
+            PotionType.INVISIBILITY,
+            PotionType.NIGHT_VISION,
+            PotionType.REGEN,
+            PotionType.WATER_BREATHING,
+            PotionType.JUMP
+    ));
 
     public ChestItem(Material material, int numberGenerated) {
         this.material = material;
@@ -27,13 +43,24 @@ public class ChestItem {
         this.enchantments.addAll(enchantments);
     }
 
+    public ChestItem(boolean isPotion){
+        this.isPotion = isPotion;
+    }
+
 
     /**
-     * Provides the item stack with the generated enchantments
+     * Provides the item stack with the generated enchantments or a potion
      *
-     * @return item stack with enchantments
+     * @return item stack with enchantments or potion
      */
     public ItemStack getItemStack() {
+        if (isPotion){
+            ItemStack potion = new ItemStack(Material.POTION, 1);
+            PotionMeta meta = (PotionMeta) potion.getItemMeta();
+            meta.setBasePotionData(new PotionData(potionTypes.get(random.nextInt(potionTypes.size()))));
+            potion.setItemMeta(meta);
+            return potion;
+        }
         var itemStack = new ItemStack(this.material, numberGenerated);
         if (enchantsGenerated == 0){
             return itemStack;
