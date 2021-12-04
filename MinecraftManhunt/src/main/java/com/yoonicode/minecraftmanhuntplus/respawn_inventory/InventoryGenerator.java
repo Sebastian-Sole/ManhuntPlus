@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ItemGenerator  {
+public class InventoryGenerator {
     PluginMain main;
     // Fields
 
@@ -69,7 +69,7 @@ public class ItemGenerator  {
     ));
 
 
-    public ItemGenerator(PluginMain main) {
+    public InventoryGenerator(PluginMain main) {
         this.main = main;
     }
 

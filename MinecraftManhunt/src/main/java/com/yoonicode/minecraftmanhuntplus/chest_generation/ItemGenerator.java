@@ -1,4 +1,4 @@
-package com.yoonicode.minecraftmanhuntplus.item_randomizer;
+package com.yoonicode.minecraftmanhuntplus.chest_generation;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -139,7 +139,7 @@ public class ItemGenerator {
      * @param tier which tier should be used
      * @return a random chestItem from the given material
      */
-    public ItemStack generateItem(int tier){
+    public ItemStack generateItemStack(int tier){
         var itemTier = tiers.get(tier);
         // Create a chestItem object from the material
         ChestItem item = itemTier.get(random.nextInt(itemTier.size()));

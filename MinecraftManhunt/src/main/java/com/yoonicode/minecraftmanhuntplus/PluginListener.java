@@ -1,6 +1,6 @@
 package com.yoonicode.minecraftmanhuntplus;
 
-import com.yoonicode.minecraftmanhuntplus.item_randomizer.ChestRandomizer;
+import com.yoonicode.minecraftmanhuntplus.chest_generation.ChestRandomizer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
