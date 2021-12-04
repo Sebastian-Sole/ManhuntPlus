@@ -1,5 +1,6 @@
 package com.yoonicode.minecraftmanhuntplus.item_randomizer;
 
+import com.yoonicode.minecraftmanhuntplus.item_generation.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class ChestItem {
+public class ChestItem implements ItemCreator {
 
     private Material material;
     private int numberGenerated = 1;
