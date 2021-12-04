@@ -46,6 +46,7 @@ public class PluginCommands implements CommandExecutor {
     public boolean runnerHelp = false;
     public boolean hunterHelp = false;
     public boolean hasteBoost = false;
+    private boolean cutClean = false;
 
     public PluginCommands(PluginMain main) {
         this.main = main;
@@ -295,6 +296,7 @@ public class PluginCommands implements CommandExecutor {
         else if ("allhelp".equals(label)){
             if (gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
+                return true;
             }
             if (args.length != 0){
                 commandSender.sendMessage("Illegal format. Use /chestgenerate.");
@@ -305,7 +307,20 @@ public class PluginCommands implements CommandExecutor {
             extraDrops = true;
             chestGenerate = true;
             hasteBoost = true;
+            cutClean = true;
             commandSender.sendMessage("All helper methods are enabled");
+            return true;
+        }
+        else if ("cutclean".equals(label)){
+            if (gameIsRunning){
+                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
+            }
+            if (args.length != 0){
+                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
+                return true;
+            }
+            cutClean = !cutClean;
+            commandSender.sendMessage("Cut Clean is set to: " + cutClean);
             return true;
         }
         return false;
@@ -398,5 +413,9 @@ public class PluginCommands implements CommandExecutor {
         main.spectators.clear();
         main.runners.clear();
         return playersCleared + " players cleared from teams";
+    }
+
+    public boolean isCutClean() {
+        return cutClean;
     }
 }

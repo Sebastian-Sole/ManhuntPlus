@@ -4,9 +4,7 @@ import com.yoonicode.minecraftmanhuntplus.item_randomizer.ChestRandomizer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -172,12 +170,53 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event){
+        if (main.commands.isCutClean()) {
+            // If animal that gives food is killed
+            handleCutClean(event);
+        }
+
+        // If ender dragon is killed
         if (event.getEntity().getType().equals(EntityType.ENDER_DRAGON)){
             for (Player player : main.hunters){
                 player.sendTitle(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "YOU LOSE!", "You're gay!", 20, 60, 20);
             }
             for (Player player : main.runners){
                 player.sendTitle(ChatColor.GREEN.toString() + ChatColor.BOLD + "YOU WIN!", ChatColor.MAGIC + "Now go have sex!", 20, 60, 20);
+            }
+        }
+    }
+
+    private void handleCutClean(EntityDeathEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Chicken) {
+            for (ItemStack item : event.getDrops()) {
+                if (item.getType().equals(Material.CHICKEN)) {
+                    item.setType(Material.COOKED_CHICKEN);
+                }
+            }
+        } else if (entity instanceof Cow) {
+            for (ItemStack drop : event.getDrops()) {
+                if (drop.getType().equals(Material.BEEF)) {
+                    drop.setType(Material.COOKED_BEEF);
+                }
+            }
+        } else if (entity instanceof Pig || entity instanceof Hoglin) {
+            for (ItemStack item : event.getDrops()) {
+                if (item.getType().equals(Material.PORKCHOP)) {
+                    item.setType(Material.COOKED_PORKCHOP);
+                }
+            }
+        } else if (entity instanceof Rabbit) {
+            for (ItemStack item : event.getDrops()) {
+                if (item.getType().equals(Material.RABBIT)) {
+                    item.setType(Material.COOKED_RABBIT);
+                }
+            }
+        } else if (entity instanceof Sheep) {
+            for (ItemStack item : event.getDrops()) {
+                if (item.getType().equals(Material.MUTTON)) {
+                    item.setType(Material.COOKED_MUTTON);
+                }
             }
         }
     }
@@ -214,6 +253,24 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
+        // If cut clean is on
+        if (main.commands.isCutClean()){
+            Block blockBroken = event.getBlock();
+            Material type = event.getBlock().getType();
+            if (type.equals(Material.IRON_ORE)) {
+                blockBroken.setType(Material.IRON_INGOT);
+                event.setExpToDrop(4);
+            }
+            else if (type.equals(Material.GOLD_ORE)){
+                blockBroken.setType(Material.GOLD_ORE);
+                event.setExpToDrop(8);
+            }
+            else if (type.equals(Material.POTATO)){
+                blockBroken.setType(Material.BAKED_POTATO);
+                event.setExpToDrop(2);
+            }
+        }
+        // If chest generate is on
         if (main.commands.chestGenerate) {
             int numberGenerated = this.random.nextInt(550);
             if (numberGenerated == 69) {
