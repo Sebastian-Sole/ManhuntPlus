@@ -183,6 +183,8 @@ public class PluginListener implements Listener {
             for (Player player : main.runners){
                 player.sendTitle(ChatColor.GREEN.toString() + ChatColor.BOLD + "YOU WIN!", ChatColor.MAGIC + "Now go have sex!", 20, 60, 20);
             }
+            main.setGameIsOver(true);
+            main.commands.gameIsRunning = false;
         }
     }
 
@@ -243,6 +245,11 @@ public class PluginListener implements Listener {
             if (main.runners.contains(event.getEntity())){
                 if (main.hunters.contains(event.getEntity().getKiller())){ // If hunter is killer
                     main.runnerDeaths.put(event.getEntity().getPlayer(), main.runnerDeaths.get(event.getEntity().getPlayer())+1); // Increases death total for runner
+                    var deathCounts = main.runnerDeaths.values();
+                    if (!deathCounts.contains(0)){
+                        main.setGameIsOver(true);
+                        main.commands.gameIsRunning = false;
+                    }
                 }
             }
         }

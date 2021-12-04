@@ -10,9 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CompassMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.inventivetalent.glow.GlowAPI;
+import org.inventivetalent.glow.GlowAPI.Color;
 
 import java.util.Map;
 
@@ -20,6 +20,7 @@ public class TaskManager {
 
 
     private final PluginMain main;
+    private final GlowAPI glowAPI = new GlowAPI();
 
     public TaskManager(PluginMain main) {
         this.main = main;
@@ -89,9 +90,9 @@ public class TaskManager {
     }
     public void showGlow(){
         for (Player player : main.runners)
-            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.runners);
+            GlowAPI.setGlowing(player, Color.GREEN, main.runners);
         for (Player player : main.hunters)
-            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.hunters);
+            GlowAPI.setGlowing(player, Color.GREEN, main.hunters);
     }
 
 

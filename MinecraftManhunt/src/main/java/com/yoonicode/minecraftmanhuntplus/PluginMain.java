@@ -4,7 +4,6 @@ import com.yoonicode.minecraftmanhuntplus.respawn_inventory.InventoryGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
@@ -33,6 +32,8 @@ public class PluginMain extends JavaPlugin {
     private TaskManager taskManager = new TaskManager(this);
     private int gameState = 0;
     private InventoryGenerator itemGenerator;
+    private boolean isPaused;
+    private boolean gameIsOver;
 
     public boolean playerIsOnTeam(Player player){
         return hunters.stream().anyMatch(member->member.getName().equals(player.getName()))
@@ -58,10 +59,11 @@ public class PluginMain extends JavaPlugin {
         for(String command : PluginCommands.registeredCommands){
             this.getCommand(command).setExecutor(commands);
         }
-        this.itemGenerator = new ItemGenerator(this);
+        this.itemGenerator = new InventoryGenerator(this);
         ScoreboardManager scoreboardManager = getScoreboardManager();
         Scoreboard board = scoreboardManager.getMainScoreboard();
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "weather clear 199999999");
+        PauseHandler.onEnable(this);
     }
 
     public World getWorld() {
@@ -72,6 +74,7 @@ public class PluginMain extends JavaPlugin {
     @Override
     public void onDisable() {
         logger.info("Minecraft Manhunt plugin disabled!");
+        PauseHandler.onDisable(this);
     }
 
     public TaskManager getTaskManager() {
@@ -88,10 +91,28 @@ public class PluginMain extends JavaPlugin {
 
     public void incrementGameState(){
         this.gameState++;
+        PauseHandler.updateGame(this);
     }
 
     public InventoryGenerator getItemGenerator() {
         return itemGenerator;
     }
 
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+
+    public boolean isGameIsOver() {
+        return gameIsOver;
+    }
+
+    public void setGameIsOver(boolean gameIsOver) {
+        this.gameIsOver = gameIsOver;
+        getConfig().set("gameOver",true);
+        saveConfig();
+    }
 }

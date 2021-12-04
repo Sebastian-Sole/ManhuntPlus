@@ -1,4 +1,4 @@
-package com.yoonicode.minecraftmanhuntplus.item_randomizer;
+package com.yoonicode.minecraftmanhuntplus.chest_generation;
 
 import com.yoonicode.minecraftmanhuntplus.item_generation.ItemCreator;
 import org.bukkit.Material;
