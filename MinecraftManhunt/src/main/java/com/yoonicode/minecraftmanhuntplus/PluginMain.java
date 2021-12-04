@@ -61,6 +61,7 @@ public class PluginMain extends JavaPlugin {
         this.itemGenerator = new ItemGenerator(this);
         ScoreboardManager scoreboardManager = getScoreboardManager();
         Scoreboard board = scoreboardManager.getMainScoreboard();
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "weather clear 199999999");
     }
 
     public World getWorld() {

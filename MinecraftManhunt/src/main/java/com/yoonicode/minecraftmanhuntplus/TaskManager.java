@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.CompassMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.inventivetalent.glow.GlowAPI;
 
 import java.util.Map;
 
@@ -85,6 +86,12 @@ public class TaskManager {
             return;
         }
         main.incrementGameState();
+    }
+    public void showGlow(){
+        for (Player player : main.runners)
+            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.runners);
+        for (Player player : main.hunters)
+            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.hunters);
     }
 
 
