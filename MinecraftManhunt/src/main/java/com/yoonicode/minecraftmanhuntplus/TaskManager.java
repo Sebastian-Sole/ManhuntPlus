@@ -80,6 +80,13 @@ public class TaskManager {
         }
     }
 
+    public void triggerRespawnUpdate(){
+        if (main.getGameState() == 3){
+            return;
+        }
+        main.incrementGameState();
+    }
+
 
 
 }
