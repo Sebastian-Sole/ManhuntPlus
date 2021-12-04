@@ -1,5 +1,6 @@
 package com.yoonicode.minecraftmanhuntplus;
 
+import com.yoonicode.minecraftmanhuntplus.respawn_inventory.ItemGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -30,6 +31,8 @@ public class PluginMain extends JavaPlugin {
     public HashMap<Player, Integer> hunterDeaths = new HashMap<>();
     public HashMap<Player, Integer> runnerDeaths = new HashMap<>();
     private TaskManager taskManager = new TaskManager(this);
+    private int gameState = 0;
+    private ItemGenerator itemGenerator;
 
     public boolean playerIsOnTeam(Player player){
         return hunters.stream().anyMatch(member->member.getName().equals(player.getName()))
@@ -55,6 +58,7 @@ public class PluginMain extends JavaPlugin {
         for(String command : PluginCommands.registeredCommands){
             this.getCommand(command).setExecutor(commands);
         }
+        this.itemGenerator = new ItemGenerator(this);
         ScoreboardManager scoreboardManager = getScoreboardManager();
         Scoreboard board = scoreboardManager.getMainScoreboard();
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "weather clear 199999999");
@@ -72,6 +76,22 @@ public class PluginMain extends JavaPlugin {
 
     public TaskManager getTaskManager() {
         return taskManager;
+    }
+
+    public int getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(int gameState) {
+        this.gameState = gameState;
+    }
+
+    public void incrementGameState(){
+        this.gameState++;
+    }
+
+    public ItemGenerator getItemGenerator() {
+        return itemGenerator;
     }
 
 }

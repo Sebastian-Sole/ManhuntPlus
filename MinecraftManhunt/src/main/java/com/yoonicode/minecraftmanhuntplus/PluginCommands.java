@@ -163,6 +163,13 @@ public class PluginCommands implements CommandExecutor {
                     }
                 }, 460L, 1200L);
             }
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+                @Override
+                public void run() {
+                    main.getTaskManager().triggerRespawnUpdate();
+                    Bukkit.broadcastMessage("Game state is now: " + main.getGameState());
+                }
+            },18000L,18000L);
 
             //todo: How often does this actually need to repeat?
             Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {

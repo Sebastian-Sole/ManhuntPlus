@@ -349,7 +349,8 @@ public class PluginListener implements Listener {
                 Player player = getServer().getPlayer(runnerName);
                 if (main.runnerDeaths.get(runnerName) != 0) {
                     player.sendMessage("You are eliminated. Keep your teammate alive");
-                    Bukkit.broadcastMessage(ChatColor.BOLD.toString() + ChatColor.RED + runnerName + " IS ELIMINATED. ELIMINATE REMAINING RUNNERS TO WIN!");
+                    Bukkit.broadcastMessage(ChatColor.BOLD.toString() + ChatColor.RED + runnerName + " IS ELIMINATED.");
+                    Bukkit.broadcastMessage(ChatColor.BOLD.toString() + ChatColor.RED + runnerName + " ELIMINATE REMAINING RUNNERS TO WIN!");
                     Bukkit.broadcastMessage(ChatColor.AQUA + runnerName + " is still able to participate. Help your teammate win!");
                     player.sendTitle(ChatColor.DARK_RED + "ELIMINATED",ChatColor.AQUA + "Help the runner team win!", 20, 60,20);
                 }
@@ -381,91 +382,11 @@ public class PluginListener implements Listener {
         }, 20L);
     }
 
-    // todo: abstract this code
     private void giveHunterItemsOnDeath(Player respawned) {
-        switch (main.hunterDeaths.get(respawned.getPlayer().getName())){
-            case 1 -> {
-                hunterRespawnOne(respawned);
-            }
-            case 2 -> {
-                hunterRespawnTwo(respawned);
-            }
-            case 3 -> {
-                hunterRespawnThree(respawned);
-            }
-            case 4 -> {
-                hunterRespawnFour(respawned);
-            }
-            default -> hunterRespawnMore(respawned);
-        }
-    }
-
-    private void hunterRespawnMore(Player respawned) {
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_AXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_PICKAXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_SWORD));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_SHOVEL));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_HELMET));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.CHAINMAIL_LEGGINGS));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_BOOTS));
-        for (int i = 0; i<=10; i++){
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COOKED_BEEF));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COAL));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.OAK_WOOD));
-        }
-    }
-
-    private void hunterRespawnFour(Player respawned) {
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_AXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_PICKAXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_SWORD));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_SHOVEL));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_HELMET));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.GOLDEN_CHESTPLATE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.GOLDEN_LEGGINGS));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.CHAINMAIL_BOOTS));
-        for (int i = 0; i<=10; i++){
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COOKED_BEEF));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COAL));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.OAK_WOOD));
-        }
-    }
-
-    private void hunterRespawnThree(Player respawned) {
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_AXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_PICKAXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_SWORD));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_SHOVEL));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.GOLDEN_HELMET));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.LEATHER_CHESTPLATE));
-        for (int i = 0; i<=10; i++){
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COOKED_BEEF));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COAL));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.OAK_WOOD));
-        }
-    }
-
-    private void hunterRespawnTwo(Player respawned) {
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_AXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_PICKAXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_SWORD));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.STONE_SHOVEL));
-        for (int i = 0; i<=6; i++){
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.BREAD));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COAL));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.OAK_WOOD));
-        }
-    }
-
-    private void hunterRespawnOne(Player respawned) {
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.WOODEN_AXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.WOODEN_PICKAXE));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
-        respawned.getPlayer().getInventory().addItem(new ItemStack(Material.WOODEN_SHOVEL));
-        for (int i = 0; i<=5; i++){
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.BREAD));
-            respawned.getPlayer().getInventory().addItem(new ItemStack(Material.COAL));
+        var inventoryToAdd = respawned.getPlayer().getInventory();
+        var itemsToAdd = main.getItemGenerator().generateItemStack();
+        for (ItemStack itemStack : itemsToAdd){
+            inventoryToAdd.addItem(itemStack);
         }
     }
 

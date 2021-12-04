@@ -81,6 +81,12 @@ public class TaskManager {
         }
     }
 
+    public void triggerRespawnUpdate(){
+        if (main.getGameState() == 3){
+            return;
+        }
+        main.incrementGameState();
+    }
     public void showGlow(){
         for (Player player : main.runners)
             GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.runners);
