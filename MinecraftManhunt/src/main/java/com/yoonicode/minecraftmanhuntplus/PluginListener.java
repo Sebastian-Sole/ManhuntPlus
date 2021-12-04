@@ -4,7 +4,6 @@ import com.yoonicode.minecraftmanhuntplus.item_randomizer.ChestRandomizer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -17,11 +16,10 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Random;
 
@@ -142,11 +140,39 @@ public class PluginListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPiglinTrade(EntityDropItemEvent event){
+        if (event.getEntity().equals(EntityType.PIGLIN)) {
+            if (random.nextInt(10) == 1)
+                dropGold(event.getEntity());
+            if (random.nextInt(15) == 1)
+                dropFood(event.getEntity());
+            if (random.nextInt(27) == 1)
+                dropEnderPearl(event.getEntity());
+            if (random.nextInt(20) == 1)
+                spawnPiglin(event.getEntity());
+        }
+    }
+
+    private void spawnPiglin(Entity entity) {
+        entity.getWorld().spawnEntity(entity.getLocation(),EntityType.PIGLIN);
+    }
+
+    private void dropEnderPearl(Entity entity) {
+        entity.getWorld().dropItem(entity.getLocation(),new ItemStack(Material.ENDER_PEARL,random.nextInt(2)+1));
+    }
+
+    private void dropFood(Entity entity) {
+        entity.getWorld().dropItem(entity.getLocation(),new ItemStack(Material.GOLDEN_CARROT,random.nextInt(5)+1));
+    }
+
+    private void dropGold(Entity entity) {
+        entity.getWorld().dropItem(entity.getLocation(),new ItemStack(Material.GOLD_INGOT));
+    }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event){
-        Entity entity = event.getEntity();
-        if (entity.getType().equals(EntityType.ENDER_DRAGON)){
+        if (event.getEntity().getType().equals(EntityType.ENDER_DRAGON)){
             for (Player player : main.hunters){
                 player.sendTitle(ChatColor.DARK_RED.toString() + ChatColor.BOLD + "YOU LOSE!", "You're gay!", 20, 60, 20);
             }
@@ -157,7 +183,7 @@ public class PluginListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) throws InterruptedException {
+    public void onPlayerDeath(PlayerDeathEvent event)  {
         if (main.commands.gameIsRunning) {
             // If hunter is killed
             if (main.hunters.contains(event.getEntity())) {
@@ -211,7 +237,7 @@ public class PluginListener implements Listener {
 
     //todo: Make and inventory randomizer
     private void giveRandomDrop(Player player) {
-        int generated = random.nextInt(35);
+        int generated = random.nextInt(32);
         switch (generated){
             case 0, 1 -> player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE));
             case 2, 3 -> {
@@ -251,15 +277,10 @@ public class PluginListener implements Listener {
             }
             case 24, 25, 26,27,28 -> {
                 for (int i =0; i<=63; i++){
-                    player.getPlayer().getInventory().addItem(new ItemStack(Material.COBBLESTONE));
+                    player.getPlayer().getInventory().addItem(new ItemStack(Material.COBBLESTONE,64));
                 }
             }
-            case 29, 30, 31, 32, 33 -> {
-                for (int i =0; i<= 63; i++){
-                    player.getPlayer().getInventory().addItem(new ItemStack(Material.WHEAT_SEEDS));
-                }
-            }
-            case 34 -> player.getPlayer().getInventory().addItem(new ItemStack(Material.ENCHANTING_TABLE));
+            case 29 -> player.getPlayer().getInventory().addItem(new ItemStack(Material.ENCHANTING_TABLE));
             default -> player.getPlayer().getInventory().addItem(new ItemStack(Material.CYAN_BED));
         }
     }
@@ -287,7 +308,6 @@ public class PluginListener implements Listener {
         }, 20L);
     }
 
-    // todo: abstract this code
     private void respawnHunter(Player player) {
         final String hunterName = player.getName();
         int giveKitID = getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
