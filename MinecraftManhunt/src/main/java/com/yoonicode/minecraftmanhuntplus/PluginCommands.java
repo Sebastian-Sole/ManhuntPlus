@@ -163,6 +163,13 @@ public class PluginCommands implements CommandExecutor {
                 }, 460L, 1200L);
             }
 
+            //todo: How often does this actually need to repeat?
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+                @Override
+                public void run() {
+                    main.getTaskManager().showGlow();
+                }
+            }, 0,600); // 2700? More?
             gameIsRunning = true;
             sendStartMessage();
             return true;
