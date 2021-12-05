@@ -95,6 +95,4 @@ public class TaskManager {
             GlowAPI.setGlowing(player, Color.GREEN, main.hunters);
     }
 
-
-
 }

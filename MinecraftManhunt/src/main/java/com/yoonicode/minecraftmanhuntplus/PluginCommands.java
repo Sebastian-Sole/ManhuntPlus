@@ -175,15 +175,15 @@ public class PluginCommands implements CommandExecutor {
                     main.getTaskManager().triggerRespawnUpdate();
                     Bukkit.broadcastMessage("Game state is now: " + main.getGameState());
                 }
-            },18000L,18000L); // 18000L, 18000L
+            },1200L,2400L); // 18000L, 18000L
 
             //todo: How often does this actually need to repeat?
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
-                @Override
-                public void run() {
-                    main.getTaskManager().showGlow();
-                }
-            }, 0,600); // 2700? More?
+//            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+//                @Override
+//                public void run() {
+//                    main.getTaskManager().showGlow();
+//                }
+//            }, 0,600); // 2700? More?
             gameIsRunning = true;
             sendStartMessage();
             PauseHandler.start(main);
@@ -292,11 +292,15 @@ public class PluginCommands implements CommandExecutor {
             return true;
         }
         else if ("pause".equals(label)){
-            if (illegalCommandCall(commandSender, args, "pause")) return true;
+            if (args.length != 0) {
+                return true;
+            }
             PauseHandler.pause(main);
         }
         else if ("unpause".equals(label)){
-            if (illegalCommandCall(commandSender, args, "unpause")) return true;
+            if (args.length != 0) {
+                return true;
+            }
             PauseHandler.unPause(main);
         }
         return false;

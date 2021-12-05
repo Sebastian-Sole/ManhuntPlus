@@ -1,17 +1,21 @@
 package com.yoonicode.minecraftmanhuntplus;
 
+import org.bukkit.Bukkit;
+
 public class PauseHandler {
 
     public static void pause(PluginMain main){
         main.getConfig().set("gameState",main.getGameState());
         main.getConfig().set("paused",true);
         main.saveConfig();
+        Bukkit.broadcastMessage("Game pause, game state is: " + main.getGameState());
     }
 
     public static void unPause(PluginMain main){
         main.setGameState(main.getConfig().getInt("gameState"));
         main.getConfig().set("pause",false);
         main.saveConfig();
+        Bukkit.broadcastMessage("Game unpaused, game state is: " + main.getGameState());
     }
 
     public static void start(PluginMain main){
@@ -25,6 +29,7 @@ public class PauseHandler {
             main.getConfig().set("gameState",0);
             main.getConfig().set("paused",false);
             main.saveConfig();
+            Bukkit.broadcastMessage("Game state: " + main.getGameState());
         }
     }
 
@@ -32,6 +37,7 @@ public class PauseHandler {
         main.getConfig().set("gameState",0);
         main.getConfig().set("paused", false);
         main.saveConfig();
+        Bukkit.broadcastMessage("Game ended, game state is: " + main.getGameState());
     }
 
     public static void onEnable(PluginMain main){
@@ -39,6 +45,9 @@ public class PauseHandler {
             main.getConfig().set("gameOver", false);
             main.saveConfig();
         }
+        main.getLogger().info("Game state is " + main.getGameState() + ", should be: " + main.getConfig().getInt("gamesState"));
+        main.getLogger().info("Paused is " + main.isPaused() + ", should be: " + main.getConfig().getBoolean("paused"));
+        main.getLogger().info("Game over state is " + main.isGameIsOver() + ", should be: " + main.getConfig().getBoolean("gameOver"));
     }
 
     public static void onDisable(PluginMain main){
