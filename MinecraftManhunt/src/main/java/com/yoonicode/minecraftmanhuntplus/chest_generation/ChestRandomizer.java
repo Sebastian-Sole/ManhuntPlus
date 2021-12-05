@@ -1,4 +1,4 @@
-package com.yoonicode.minecraftmanhuntplus.item_randomizer;
+package com.yoonicode.minecraftmanhuntplus.chest_generation;
 
 import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
@@ -20,11 +20,11 @@ public class ChestRandomizer {
         for (int i = 0; i < numberOfItemsToAdd; i++) { //Generate that amount of random items
             int generatedNumber = random.nextInt(24) + 1;
             switch (generatedNumber) {
-                case 1, 2 -> itemsToAdd.add(itemGenerator.generateItem(0));
-                case 3, 4, 5, 6 -> itemsToAdd.add(itemGenerator.generateItem(1));
-                case 7, 8, 9, 10, 11 -> itemsToAdd.add(itemGenerator.generateItem(2));
-                case 12, 13, 14, 15, 16, 17 -> itemsToAdd.add(itemGenerator.generateItem(3));
-                case 18, 19, 20, 21, 22, 23, 24 -> itemsToAdd.add(itemGenerator.generateItem(4));
+                case 1, 2 -> itemsToAdd.add(itemGenerator.generateItemStack(0));
+                case 3, 4, 5, 6 -> itemsToAdd.add(itemGenerator.generateItemStack(1));
+                case 7, 8, 9, 10, 11 -> itemsToAdd.add(itemGenerator.generateItemStack(2));
+                case 12, 13, 14, 15, 16, 17 -> itemsToAdd.add(itemGenerator.generateItemStack(3));
+                case 18, 19, 20, 21, 22, 23, 24 -> itemsToAdd.add(itemGenerator.generateItemStack(4));
             }
         }
         return itemsToAdd;

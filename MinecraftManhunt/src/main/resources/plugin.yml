@@ -60,3 +60,15 @@ commands:
     description: Enable all help hunterhelp, runnerhelp, etc.
     usage: /allhelp
     permission: minecraftmanhuntplus.allhelp
+  cutclean:
+    description: Enables cutclean
+    usage: /cutclean
+    permission: minecraftmanhuntplus.cutclean
+  pause:
+    description: Pauses the game
+    usage: /pause
+    permission: minecraftmanhuntplus.pause
+  unpause:
+    description: Unpauses the game
+    usage: /unpause
+    permission: minecraftmanhuntplus.unpause

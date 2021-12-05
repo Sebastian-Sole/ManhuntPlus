@@ -31,7 +31,10 @@ public class PluginCommands implements CommandExecutor {
             "extradrops",
             "chestgenerate",
             "hasteboost",
-            "allhelp"
+            "allhelp",
+            "cutclean",
+            "pause",
+            "unpause"
     };
     public boolean hitHasRegistered; // used for startGameByHit option
     public boolean extraDrops;
@@ -68,6 +71,9 @@ public class PluginCommands implements CommandExecutor {
             case "/clearteams":
             case "/hasteboost":
             case "/allhelp":
+            case "/cutclean":
+            case "/pause":
+            case "/unpause":
                 return new ArrayList<String>();
             case "/setheadstart": {
                 return new ArrayList<String>(){
@@ -169,17 +175,18 @@ public class PluginCommands implements CommandExecutor {
                     main.getTaskManager().triggerRespawnUpdate();
                     Bukkit.broadcastMessage("Game state is now: " + main.getGameState());
                 }
-            },18000L,18000L);
+            },1200L,2400L); // 18000L, 18000L
 
             //todo: How often does this actually need to repeat?
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
-                @Override
-                public void run() {
-                    main.getTaskManager().showGlow();
-                }
-            }, 0,600); // 2700? More?
+//            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+//                @Override
+//                public void run() {
+//                    main.getTaskManager().showGlow();
+//                }
+//            }, 0,600); // 2700? More?
             gameIsRunning = true;
             sendStartMessage();
+            PauseHandler.start(main);
             return true;
         }
         else if ("end".equals(label)) {
@@ -202,9 +209,13 @@ public class PluginCommands implements CommandExecutor {
             worldBorderModified = false;
             Bukkit.broadcastMessage("Manhunt stopped!");
             gameIsRunning = false;
+            PauseHandler.end(main);
             return true;
         }
         else if("compass".equals(label)) {
+            if (args.length !=0){
+                commandSender.sendMessage("Illegal format, please use /compass");
+            }
             Player sender = (Player) commandSender;
             sender.getInventory().addItem(new ItemStack(Material.COMPASS, 1));
             commandSender.sendMessage("Here you go!");
@@ -237,78 +248,34 @@ public class PluginCommands implements CommandExecutor {
             return true;
         }
         else if("runnerhelp".equals(label)){
-            if (gameIsRunning){
-                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
-                return true;
-            }
-            if (args.length != 0){
-                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
-                return true;
-            }
+            if (illegalCommandCall(commandSender, args, "runnerhelp")) return true;
             runnerHelp=!runnerHelp;
             commandSender.sendMessage("Runner help is set to: " + runnerHelp);
         }
         else if("hunterhelp".equals(label)){
-            if (gameIsRunning){
-                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
-                return true;
-            }
-            if (args.length != 0){
-                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
-                return true;
-            }
+            if (illegalCommandCall(commandSender, args, "hunterhelp")) return true;
             hunterHelp=!hunterHelp;
             commandSender.sendMessage("Hunter help is set to: " + hunterHelp);
-
-
         }
         else if("extradrops".equals(label)){
-            if (gameIsRunning){
-                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
-                return true;
-            }
-            if (args.length != 0){
-                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
-                return true;
-            }
+            if (illegalCommandCall(commandSender, args, "extradrops")) return true;
             extraDrops=!extraDrops;
             commandSender.sendMessage("Extra drops is set to: " + extraDrops);
         }
         else if ("chestgenerate".equals(label)){
-            if (gameIsRunning){
-                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
-                return true;
-            }
-            if (args.length != 0){
-                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
-                return true;
-            }
+            if (illegalCommandCall(commandSender, args, "chestgenerate")) return true;
             chestGenerate = !chestGenerate;
             commandSender.sendMessage("Random Chest spawns is set to: " + chestGenerate);
             return true;
         }
         else if ("hasteboost".equals(label)){
-            if (gameIsRunning){
-                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
-                return true;
-            }
-            if (args.length != 0){
-                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
-                return true;
-            }
+            if (illegalCommandCall(commandSender, args, "hasteboost")) return true;
             hasteBoost = !hasteBoost;
             commandSender.sendMessage("Haste boost is set to: " + hasteBoost);
             return true;
         }
         else if ("allhelp".equals(label)){
-            if (gameIsRunning){
-                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
-                return true;
-            }
-            if (args.length != 0){
-                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
-                return true;
-            }
+            if (illegalCommandCall(commandSender, args, "allhelp")) return true;
             runnerHelp = true;
             hunterHelp = true;
             extraDrops = true;
@@ -319,19 +286,40 @@ public class PluginCommands implements CommandExecutor {
             return true;
         }
         else if ("cutclean".equals(label)){
-            if (gameIsRunning){
-                commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
-            }
-            if (args.length != 0){
-                commandSender.sendMessage("Illegal format. Use /chestgenerate.");
-                return true;
-            }
+            if (illegalCommandCall(commandSender, args, "cutclean")) return true;
             cutClean = !cutClean;
             commandSender.sendMessage("Cut Clean is set to: " + cutClean);
             return true;
         }
+        else if ("pause".equals(label)){
+            if (args.length != 0) {
+                return true;
+            }
+            PauseHandler.pause(main);
+        }
+        else if ("unpause".equals(label)){
+            if (args.length != 0) {
+                return true;
+            }
+            PauseHandler.unPause(main);
+        }
         return false;
 
+    }
+
+    private boolean illegalCommandCall(CommandSender commandSender, String[] args, String command) {
+        gameInSession(commandSender);
+        if (args.length != 0){
+            commandSender.sendMessage("Illegal format. Use /"+command+".");
+            return true;
+        }
+        return false;
+    }
+
+    private void gameInSession(CommandSender commandSender) {
+        if (gameIsRunning){
+            commandSender.sendMessage("Game is already in progress. Restart a game to change this option");
+        }
     }
 
     private boolean isOnTargetTeam(CommandSender commandSender, Player target, ArrayList<Player> team) {
