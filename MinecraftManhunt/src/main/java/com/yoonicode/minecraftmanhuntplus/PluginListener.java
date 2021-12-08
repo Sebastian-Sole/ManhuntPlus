@@ -1,6 +1,8 @@
 package com.yoonicode.minecraftmanhuntplus;
 
 import com.yoonicode.minecraftmanhuntplus.chest_generation.ChestRandomizer;
+import com.yoonicode.minecraftmanhuntplus.game_state.Achievement;
+import com.yoonicode.minecraftmanhuntplus.game_state.GameStateCalculator;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -18,8 +20,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -29,6 +31,8 @@ public class PluginListener implements Listener {
     private Random random = new Random();
 
     PluginMain main;
+    private boolean thrown;
+
     public PluginListener(PluginMain main) {
         this.main = main;
         setRunnersToSpecOnDeath = main.getConfig().getBoolean("setRunnersToSpecOnDeath", true);
@@ -37,7 +41,6 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent e){
         Player player = e.getPlayer();
-
         if(player.getEquipment().getItemInMainHand().getType() == Material.COMPASS){
             if(!main.playerIsOnTeam(player)){
                 if(player.isOp()){
@@ -55,6 +58,14 @@ public class PluginListener implements Listener {
             }
             TargetSelectInventory inv = new TargetSelectInventory(main);
             inv.DisplayToPlayer(player);
+        }
+        else if (player.getEquipment().getItemInMainHand().getType() == Material.ENDER_EYE){
+            if (!this.thrown) {
+                if (!Objects.requireNonNull(e.getClickedBlock()).getType().equals(Material.END_PORTAL_FRAME)) {
+                    main.getGameStateCalculator().updateAchievement(Achievement.EYE_THROW);
+                    this.thrown = true;
+                }
+            }
         }
     }
 
@@ -239,6 +250,8 @@ public class PluginListener implements Listener {
                     if (main.commands.extraDrops) {
                         giveRandomDrop(killer);
                     }
+                    main.getGameStateCalculator().updateDeaths();
+                    Bukkit.broadcastMessage("Game state is now: " + main.getGameState());
                 }
             }
             // If runner is killed
@@ -257,6 +270,27 @@ public class PluginListener implements Listener {
             main.logger.info("Game isn't running");
         }
     }
+
+    @EventHandler
+    public void onAdvancement(PlayerAdvancementDoneEvent event){
+        if (main.runners.contains(event.getPlayer())){
+            var achivementName = event.getAdvancement().getKey().getKey();
+            String enumName = keyToEnumName(achivementName);
+            var matchList = Arrays.stream(Achievement.values()).filter(
+                    achievement -> achievement.toString().equals(enumName)).collect(Collectors.toList());
+            if (matchList.size() !=0){
+                var match = matchList.get(0);
+                main.getGameStateCalculator().updateAchievement(match);
+            }
+        }
+    }
+
+
+    private String keyToEnumName(String key){
+        var lastSlash = key.lastIndexOf('/');
+        return key.substring(lastSlash+1).toUpperCase();
+    }
+
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
