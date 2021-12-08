@@ -1,5 +1,7 @@
 package com.yoonicode.minecraftmanhuntplus;
 
+import com.yoonicode.minecraftmanhuntplus.game_state.Achievement;
+import com.yoonicode.minecraftmanhuntplus.game_state.GameStateCalculator;
 import com.yoonicode.minecraftmanhuntplus.respawn_inventory.InventoryGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,10 +32,11 @@ public class PluginMain extends JavaPlugin {
     public HashMap<Player, Integer> hunterDeaths = new HashMap<>();
     public HashMap<Player, Integer> runnerDeaths = new HashMap<>();
     private TaskManager taskManager = new TaskManager(this);
-    private int gameState = 0;
+    private double gameState = 0;
     private InventoryGenerator itemGenerator;
     private boolean isPaused;
     private boolean gameIsOver;
+    private GameStateCalculator gameStateCalculator;
 
     public boolean playerIsOnTeam(Player player){
         return hunters.stream().anyMatch(member->member.getName().equals(player.getName()))
@@ -60,6 +63,7 @@ public class PluginMain extends JavaPlugin {
             this.getCommand(command).setExecutor(commands);
         }
         this.itemGenerator = new InventoryGenerator(this);
+        this.gameStateCalculator = new GameStateCalculator(this);
         ScoreboardManager scoreboardManager = getScoreboardManager();
         Scoreboard board = scoreboardManager.getMainScoreboard();
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "weather clear 199999999");
@@ -81,11 +85,11 @@ public class PluginMain extends JavaPlugin {
         return taskManager;
     }
 
-    public int getGameState() {
+    public double getGameState() {
         return gameState;
     }
 
-    public void setGameState(int gameState) {
+    public void setGameState(double gameState) {
         this.gameState = gameState;
     }
 
@@ -115,4 +119,9 @@ public class PluginMain extends JavaPlugin {
         getConfig().set("gameOver",true);
         saveConfig();
     }
+
+    public GameStateCalculator getGameStateCalculator() {
+        return gameStateCalculator;
+    }
+
 }

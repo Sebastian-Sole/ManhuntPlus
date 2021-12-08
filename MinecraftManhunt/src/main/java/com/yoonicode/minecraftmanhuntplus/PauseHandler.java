@@ -3,6 +3,7 @@ package com.yoonicode.minecraftmanhuntplus;
 import org.bukkit.Bukkit;
 
 public class PauseHandler {
+    //todo: add config data for deaths, runner advancements,
 
     public static void pause(PluginMain main){
         main.getConfig().set("gameState",main.getGameState());
@@ -12,7 +13,7 @@ public class PauseHandler {
     }
 
     public static void unPause(PluginMain main){
-        main.setGameState(main.getConfig().getInt("gameState"));
+        main.setGameState(main.getConfig().getDouble("gameState"));
         main.getConfig().set("pause",false);
         main.saveConfig();
         Bukkit.broadcastMessage("Game unpaused, game state is: " + main.getGameState());
@@ -34,7 +35,8 @@ public class PauseHandler {
     }
 
     public static void end(PluginMain main){
-        main.getConfig().set("gameState",0);
+        main.setGameState(0);
+        main.getConfig().set("gameState",main.getGameState());
         main.getConfig().set("paused", false);
         main.saveConfig();
         Bukkit.broadcastMessage("Game ended, game state is: " + main.getGameState());
