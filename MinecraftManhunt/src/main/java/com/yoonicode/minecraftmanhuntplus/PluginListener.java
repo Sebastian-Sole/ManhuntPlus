@@ -2,7 +2,6 @@ package com.yoonicode.minecraftmanhuntplus;
 
 import com.yoonicode.minecraftmanhuntplus.chest_generation.ChestRandomizer;
 import com.yoonicode.minecraftmanhuntplus.game_state.Achievement;
-import com.yoonicode.minecraftmanhuntplus.game_state.GameStateCalculator;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -185,6 +184,9 @@ public class PluginListener implements Listener {
             // If animal that gives food is killed
             handleCutClean(event);
         }
+        if (event.getEntity().getType().equals(EntityType.BLAZE)){
+            handleBlazeDeath(event.getEntity());
+        }
 
         // If ender dragon is killed
         if (event.getEntity().getType().equals(EntityType.ENDER_DRAGON)){
@@ -196,6 +198,18 @@ public class PluginListener implements Listener {
             }
             main.setGameIsOver(true);
             main.commands.gameIsRunning = false;
+        }
+    }
+
+    private void handleBlazeDeath(Entity entity) {
+        if (Math.random() < 0.5){
+            entity.getWorld().dropItem(entity.getLocation(),new ItemStack(Material.GOLD_INGOT));
+        }
+        if (Math.random() < 0.045){
+            entity.getWorld().dropItem(entity.getLocation(),new ItemStack(Material.ENDER_PEARL));
+        }
+        if (Math.random() < 0.01){
+            entity.getWorld().dropItem(entity.getLocation(),new ItemStack(Material.NETHERITE_SCRAP));
         }
     }
 
@@ -404,6 +418,9 @@ public class PluginListener implements Listener {
                 player.setHealthScale(20.0);
                 player.setMaxHealth(20.0);
                 player.setHealth(20.0);
+                if (main.commands.runnerHelp) {
+                    respawnItems(player);
+                }
             }
         }, 20L);
     }
@@ -418,13 +435,13 @@ public class PluginListener implements Listener {
                 player.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(600, 2));
                 player.getPlayer().addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(1200, 2));
                 if (main.commands.hunterHelp) {
-                    giveHunterItemsOnDeath(player);
+                    respawnItems(player);
                 }
             }
         }, 20L);
     }
 
-    private void giveHunterItemsOnDeath(Player respawned) {
+    private void respawnItems(Player respawned) {
         var inventoryToAdd = respawned.getPlayer().getInventory();
         var itemsToAdd = main.getItemGenerator().generateItemStack();
         for (ItemStack itemStack : itemsToAdd){
