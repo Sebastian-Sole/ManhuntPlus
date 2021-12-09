@@ -9,6 +9,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -60,11 +61,9 @@ public class PluginListener implements Listener {
             inv.DisplayToPlayer(player);
         }
         else if (player.getEquipment().getItemInMainHand().getType() == Material.ENDER_EYE){
-            if (!this.thrown) {
-                if (!Objects.requireNonNull(e.getClickedBlock()).getType().equals(Material.END_PORTAL_FRAME)) {
-                    main.getGameStateCalculator().updateAchievement(Achievement.EYE_THROW);
-                    this.thrown = true;
-                }
+            if (e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+                main.getGameStateCalculator().updateAchievement(Achievement.EYE_THROW);
+                this.thrown = true;
             }
         }
     }
