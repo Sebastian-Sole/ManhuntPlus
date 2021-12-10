@@ -138,6 +138,10 @@ public class PluginCommands implements CommandExecutor {
             return true;
         }
         else if ("start".equals(label)) {
+            if (!main.getConfig().getBoolean("gameIsOver")){
+                commandSender.sendMessage("This game is paused, do not use /start. Use /unpause to continue.");
+                return true;
+            }
             if(gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Use /end before starting another game.");
                 return true;
@@ -156,6 +160,7 @@ public class PluginCommands implements CommandExecutor {
             updateSpectators();
             runnersState();
             huntersState(headStartDuration);
+//            teleportPlayers();
             compassTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
                 public void run() {
                     main.getTaskManager().updateCompass();
@@ -299,6 +304,12 @@ public class PluginCommands implements CommandExecutor {
         return false;
 
     }
+
+//    private void teleportPlayers() {
+//        for (Player player : Bukkit.getOnlinePlayers()){
+//            player.teleport(player.getWorld().getSpawnLocation());
+//        }
+//    }
 
     private boolean illegalCommandCall(CommandSender commandSender, String[] args, String command) {
         gameInSession(commandSender);

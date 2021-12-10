@@ -61,8 +61,10 @@ public class PluginListener implements Listener {
         }
         else if (player.getEquipment().getItemInMainHand().getType() == Material.ENDER_EYE){
             if (e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-                main.getGameStateCalculator().updateAchievement(Achievement.EYE_THROW);
-                this.thrown = true;
+                if (!this.thrown) {
+                    main.getGameStateCalculator().updateAchievement(Achievement.EYE_THROW);
+                    this.thrown = true;
+                }
             }
         }
     }
@@ -117,20 +119,23 @@ public class PluginListener implements Listener {
         main.portals.put(event.getPlayer().getName(), event.getFrom());
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!main.commands.worldBorderModified && main.getConfig().getBoolean("preGameWorldBorder", false)) {
-            Location joinLoc = event.getPlayer().getLocation();
-            WorldBorder wb = main.getWorld().getWorldBorder();
-
-            wb.setDamageAmount(0);
-            wb.setWarningDistance(0);
-            wb.setCenter(joinLoc);
-            wb.setSize(main.getConfig().getInt("preGameBorderSize", 700));
-
-            main.commands.worldBorderModified = true;
-        }
-    }
+//    @EventHandler
+//    public void onPlayerJoin(PlayerJoinEvent event) {
+//        if (main.getConfig().getBoolean("paused")){
+//            return;
+//        }
+//        if (!main.commands.worldBorderModified && main.getConfig().getBoolean("preGameWorldBorder", false)) {
+//            Location joinLoc = event.getPlayer().getLocation();
+//            WorldBorder wb = main.getWorld().getWorldBorder();
+//
+//            wb.setDamageAmount(0);
+//            wb.setWarningDistance(0);
+//            wb.setCenter(joinLoc);
+//            wb.setSize(main.getConfig().getInt("preGameBorderSize", 700));
+//
+//            main.commands.worldBorderModified = true;
+//        }
+//    }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){

@@ -74,10 +74,10 @@ public class TaskManager {
 
     public void giveHaste() {
         for (Player player : main.hunters){
-            player.getPlayer().addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(Integer.MAX_VALUE, 3));
+            player.getPlayer().addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(Integer.MAX_VALUE, 2));
         }
         for (Player player : main.runners){
-            player.getPlayer().addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(Integer.MAX_VALUE, 3));
+            player.getPlayer().addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(Integer.MAX_VALUE, 2));
         }
     }
 //
