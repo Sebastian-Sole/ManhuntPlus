@@ -312,6 +312,9 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
+        if (main.getConfig().getBoolean("paused")){
+            event.getPlayer().sendMessage("Game is paused, wait until the game starts until you break blocks");
+        }
         // If cut clean is on
         if (main.commands.isCutClean()){
             Block blockBroken = event.getBlock();
