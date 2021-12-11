@@ -330,27 +330,33 @@ public class PluginListener implements Listener {
 //            event.getPlayer().sendMessage("Game is paused, wait until the game starts until you break blocks");
 //            event.setCancelled(true);
 //        }
-        // If cut clean is on
         if (main.commands.isCutClean()){
             Block blockBroken = event.getBlock();
             World world = blockBroken.getWorld();
             Location location = blockBroken.getLocation();
             Material type = event.getBlock().getType();
-            if (type.equals(Material.IRON_ORE)) {
+            if (type.equals(Material.IRON_ORE) || type.equals(Material.DEEPSLATE_IRON_ORE)) {
                 event.setCancelled(true);
                 blockBroken.setType(Material.AIR);
                 world.dropItemNaturally(location, new ItemStack(Material.IRON_INGOT));
                 ExperienceOrb orb = world.spawn(location, ExperienceOrb.class);
                 orb.setExperience(2);
             }
-            else if (type.equals(Material.GOLD_ORE)){
+            else if (type.equals(Material.GOLD_ORE) || type.equals(Material.DEEPSLATE_GOLD_ORE)){
                 event.setCancelled(true);
                 blockBroken.setType(Material.AIR);
                 world.dropItemNaturally(location, new ItemStack(Material.GOLD_INGOT));
                 ExperienceOrb orb = world.spawn(location, ExperienceOrb.class);
                 orb.setExperience(2);
             }
-            else if (type.equals(Material.POTATO)){
+            else if (type.equals(Material.COPPER_ORE) || type.equals(Material.DEEPSLATE_COPPER_ORE)){
+                event.setCancelled(true);
+                blockBroken.setType(Material.AIR);
+                world.dropItemNaturally(location, new ItemStack(Material.COPPER_INGOT));
+                ExperienceOrb orb = world.spawn(location, ExperienceOrb.class);
+                orb.setExperience(2);
+            }
+            else if (type.equals(Material.POTATOES)){
                 event.setCancelled(true);
                 blockBroken.setType(Material.AIR);
                 world.dropItemNaturally(location, new ItemStack(Material.BAKED_POTATO));
