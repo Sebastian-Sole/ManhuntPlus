@@ -1,9 +1,12 @@
 package com.yoonicode.minecraftmanhuntplus;
 
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -138,10 +141,10 @@ public class PluginCommands implements CommandExecutor {
             return true;
         }
         else if ("start".equals(label)) {
-            if (!main.getConfig().getBoolean("gameIsOver")){
-                commandSender.sendMessage("This game is paused, do not use /start. Use /unpause to continue.");
-                return true;
-            }
+//            if (!main.getConfig().getBoolean("gameIsOver")){
+//                commandSender.sendMessage("This game is paused, do not use /start. Use /unpause to continue.");
+//                return true;
+//            }
             if(gameIsRunning){
                 commandSender.sendMessage("Game is already in progress. Use /end before starting another game.");
                 return true;
@@ -373,7 +376,6 @@ public class PluginCommands implements CommandExecutor {
             player.setHealth(20.0);
             player.setFoodLevel(20);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 450,1));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE,1));
 
             if (main.getConfig().getBoolean("clearRunnerInvOnStart", false)) {
                 player.getInventory().clear();
