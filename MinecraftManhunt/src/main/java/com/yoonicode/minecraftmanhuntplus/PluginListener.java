@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -32,6 +33,7 @@ public class PluginListener implements Listener {
 
     PluginMain main;
     private boolean thrown;
+    private int spawnersGenerated;
 
     public PluginListener(PluginMain main) {
         this.main = main;
@@ -61,8 +63,10 @@ public class PluginListener implements Listener {
         }
         else if (player.getEquipment().getItemInMainHand().getType() == Material.ENDER_EYE){
             if (e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-                main.getGameStateCalculator().updateAchievement(Achievement.EYE_THROW);
-                this.thrown = true;
+                if (!this.thrown) {
+                    main.getGameStateCalculator().updateAchievement(Achievement.EYE_THROW);
+                    this.thrown = true;
+                }
             }
         }
     }
@@ -115,41 +119,50 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onPlayerEnterPortal(PlayerPortalEvent event){
         main.portals.put(event.getPlayer().getName(), event.getFrom());
+        //todo: Add timer for runner compass
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+            @Override
+            public void run() {
+                if (spawnersGenerated < 5) {
+                    TaskManager.generateSpawner();
+                    spawnersGenerated++;
+                }
+            }
+        },12000L,2400L);
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!main.commands.worldBorderModified && main.getConfig().getBoolean("preGameWorldBorder", false)) {
-            Location joinLoc = event.getPlayer().getLocation();
-            WorldBorder wb = main.getWorld().getWorldBorder();
-
-            wb.setDamageAmount(0);
-            wb.setWarningDistance(0);
-            wb.setCenter(joinLoc);
-            wb.setSize(main.getConfig().getInt("preGameBorderSize", 700));
-
-            main.commands.worldBorderModified = true;
-        }
-    }
+//    @EventHandler
+//    public void onPlayerJoin(PlayerJoinEvent event) {
+//        if (main.getConfig().getBoolean("paused")){
+//            return;
+//        }
+//        if (!main.commands.worldBorderModified && main.getConfig().getBoolean("preGameWorldBorder", false)) {
+//            Location joinLoc = event.getPlayer().getLocation();
+//            WorldBorder wb = main.getWorld().getWorldBorder();
+//
+//            wb.setDamageAmount(0);
+//            wb.setWarningDistance(0);
+//            wb.setCenter(joinLoc);
+//            wb.setSize(main.getConfig().getInt("preGameBorderSize", 700));
+//
+//            main.commands.worldBorderModified = true;
+//        }
+//    }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
-        if(main.commands.gameIsRunning){
             if (main.hunters.contains(event.getPlayer())) {
                 respawnHunter(event.getPlayer());
             }
             else if (main.runners.contains(event.getPlayer())) {
-                respawnRunner(event.getPlayer());
+                respawnHunter(event.getPlayer());
             }
-        }
-        else{
-            main.logger.info("Game isn't running");
-        }
     }
 
     @EventHandler
     public void onPiglinTrade(EntityDropItemEvent event){
         if (event.getEntity().equals(EntityType.PIGLIN)) {
+            //TODO: REFACTOR THESE METHODS INTO ONE METHOD
             if (random.nextInt(10) == 1)
                 dropGold(event.getEntity());
             if (random.nextInt(15) == 1)
@@ -158,7 +171,13 @@ public class PluginListener implements Listener {
                 dropEnderPearl(event.getEntity());
             if (random.nextInt(20) == 1)
                 spawnPiglin(event.getEntity());
+            if (random.nextInt(40) == 1)
+                dropBlazeRod(event.getEntity());
         }
+    }
+
+    private void dropBlazeRod(Entity entity) {
+        entity.getWorld().dropItem(entity.getLocation(),new ItemStack(Material.BLAZE_ROD));
     }
 
     private void spawnPiglin(Entity entity) {
@@ -253,7 +272,7 @@ public class PluginListener implements Listener {
             // If hunter is killed
             if (main.hunters.contains(event.getEntity())) {
                 event.getDrops().removeIf(i -> i.getType() == Material.COMPASS);
-                if (main.runners.contains(event.getEntity().getKiller().getPlayer())) { // If runner is killer
+                if (main.runners.contains(Objects.requireNonNull(event.getEntity().getKiller()).getPlayer())) { // If runner is killer
                     Player killer = Bukkit.getPlayer(event.getEntity().getKiller().getName());
                     main.hunterDeaths.put(event.getEntity().getPlayer(), main.hunterDeaths.get(event.getEntity().getPlayer()) + 1); // Increases death total for hunter
                     if (main.commands.runnerHelp) {
@@ -287,8 +306,8 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onAdvancement(PlayerAdvancementDoneEvent event){
         if (main.runners.contains(event.getPlayer())){
-            var achivementName = event.getAdvancement().getKey().getKey();
-            String enumName = keyToEnumName(achivementName);
+            var achievementName = event.getAdvancement().getKey().getKey();
+            String enumName = keyToEnumName(achievementName);
             var matchList = Arrays.stream(Achievement.values()).filter(
                     achievement -> achievement.toString().equals(enumName)).collect(Collectors.toList());
             if (matchList.size() !=0){
@@ -307,26 +326,42 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
+//        if (main.getConfig().getBoolean("paused")){
+//            event.getPlayer().sendMessage("Game is paused, wait until the game starts until you break blocks");
+//            event.setCancelled(true);
+//        }
         // If cut clean is on
         if (main.commands.isCutClean()){
             Block blockBroken = event.getBlock();
+            World world = blockBroken.getWorld();
+            Location location = blockBroken.getLocation();
             Material type = event.getBlock().getType();
             if (type.equals(Material.IRON_ORE)) {
-                blockBroken.setType(Material.IRON_INGOT);
-                event.setExpToDrop(4);
+                event.setCancelled(true);
+                blockBroken.setType(Material.AIR);
+                world.dropItemNaturally(location, new ItemStack(Material.IRON_INGOT));
+                ExperienceOrb orb = world.spawn(location, ExperienceOrb.class);
+                orb.setExperience(2);
             }
             else if (type.equals(Material.GOLD_ORE)){
-                blockBroken.setType(Material.GOLD_ORE);
-                event.setExpToDrop(8);
+                event.setCancelled(true);
+                blockBroken.setType(Material.AIR);
+                world.dropItemNaturally(location, new ItemStack(Material.GOLD_INGOT));
+                ExperienceOrb orb = world.spawn(location, ExperienceOrb.class);
+                orb.setExperience(2);
             }
             else if (type.equals(Material.POTATO)){
-                blockBroken.setType(Material.BAKED_POTATO);
-                event.setExpToDrop(2);
+                event.setCancelled(true);
+                blockBroken.setType(Material.AIR);
+                world.dropItemNaturally(location, new ItemStack(Material.BAKED_POTATO));
+                ExperienceOrb orb = world.spawn(location, ExperienceOrb.class);
+                orb.setExperience(1);
             }
+
         }
         // If chest generate is on
         if (main.commands.chestGenerate) {
-            int numberGenerated = this.random.nextInt(550);
+            int numberGenerated = this.random.nextInt(500);
             if (numberGenerated == 69) {
                 Location blockBrokenLocation = event.getBlock().getLocation();
                 createChest(blockBrokenLocation, event);
@@ -402,7 +437,7 @@ public class PluginListener implements Listener {
         int giveKitID = getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
             public void run() {
                 Player player = getServer().getPlayer(runnerName);
-                if (main.runnerDeaths.get(runnerName) != 0) {
+                if (main.runnerDeaths.get(player) != 0) {
                     player.sendMessage("You are eliminated. Keep your teammate alive");
                     Bukkit.broadcastMessage(ChatColor.BOLD.toString() + ChatColor.RED + runnerName + " IS ELIMINATED.");
                     Bukkit.broadcastMessage(ChatColor.BOLD.toString() + ChatColor.RED + runnerName + " ELIMINATE REMAINING RUNNERS TO WIN!");
@@ -412,8 +447,7 @@ public class PluginListener implements Listener {
                 else{
                     player.sendMessage("You're still in the game! Get to your teammate quickly before the hunters eliminate you!");
                 }
-                player.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(2400, 2));
-                player.getPlayer().addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(2400, 2));
+                player.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(4800, 2));
                 player.setHealthScale(20.0);
                 player.setMaxHealth(20.0);
                 player.setHealth(20.0);
@@ -421,7 +455,7 @@ public class PluginListener implements Listener {
                     respawnItems(player);
                 }
             }
-        }, 20L);
+        }, 60L);
     }
 
     private void respawnHunter(Player player) {
@@ -431,13 +465,19 @@ public class PluginListener implements Listener {
                 Player player = getServer().getPlayer(hunterName);
                 player.sendMessage("Death total: " + main.hunterDeaths.get(player.getName()));
                 player.getPlayer().getInventory().addItem(new ItemStack(Material.COMPASS, 1));
-                player.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(600, 2));
-                player.getPlayer().addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(1200, 2));
+                int speedTime;
+                if (main.getGameState() < 2){
+                    speedTime = 1200;
+                }
+                else {
+                    speedTime = 2400;
+                }
+                player.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(speedTime, 2));
                 if (main.commands.hunterHelp) {
                     respawnItems(player);
                 }
             }
-        }, 20L);
+        }, 60L);
     }
 
     private void respawnItems(Player respawned) {
@@ -459,4 +499,11 @@ public class PluginListener implements Listener {
         event.setCompletions(completions);
     }
 
+    public int getSpawnersGenerated() {
+        return spawnersGenerated;
+    }
+
+    public void setSpawnersGenerated(int spawnersGenerated) {
+        this.spawnersGenerated = spawnersGenerated;
+    }
 }

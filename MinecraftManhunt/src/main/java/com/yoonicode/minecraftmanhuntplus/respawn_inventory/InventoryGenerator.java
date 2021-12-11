@@ -40,7 +40,11 @@ public class InventoryGenerator {
             new ItemStack(Material.STONE_AXE),
             new ItemStack(Material.IRON_PICKAXE),
             new ItemStack(Material.IRON_SHOVEL),
-            new ItemStack(Material.STONE_SWORD)
+            new ItemStack(Material.STONE_SWORD),
+            new ItemStack(Material.GOLDEN_CHESTPLATE),
+            new ItemStack(Material.GOLDEN_LEGGINGS),
+            new ItemStack(Material.BREAD,10),
+            new ItemStack(Material.TORCH,10)
     ));
 
     // 3-4
@@ -53,7 +57,7 @@ public class InventoryGenerator {
             new ItemStack(Material.IRON_BOOTS),
             new ItemStack(Material.FURNACE),
             new ItemStack(Material.COAL, 3),
-            new ItemStack(Material.OAK_LOG,2)
+            new ItemStack(Material.OAK_LOG,10)
     ));
 
     // 4-5
@@ -104,7 +108,7 @@ public class InventoryGenerator {
             new ItemStack(Material.COOKED_BEEF,5)
     ));
 
-    // 6-7
+    // 7-8
     private ArrayList<ItemStack> respawnEight = new ArrayList<>(Arrays.asList(
             new ItemStack(Material.IRON_AXE),
             new ItemStack(Material.IRON_PICKAXE),
@@ -121,7 +125,7 @@ public class InventoryGenerator {
             new ItemStack(Material.SHIELD)
     ));
 
-    // 7-8
+    // 8-9
     private ArrayList<ItemStack> respawnNine = new ArrayList<>(Arrays.asList(
             new ItemStack(Material.IRON_AXE),
             new ItemStack(Material.IRON_PICKAXE),
@@ -142,24 +146,25 @@ public class InventoryGenerator {
 
     private ArrayList<ItemStack> tierOne = new ArrayList<>(Arrays.asList(
             new ItemStack(Material.IRON_ORE, random.nextInt(5)+1),
-            new ItemStack(Material.BREAD, random.nextInt(5)+1)
+            new ItemStack(Material.BREAD, random.nextInt(5)+5)
     ));
 
     private ArrayList<ItemStack> tierTwo = new ArrayList<>(Arrays.asList(
             new ItemStack(Material.IRON_HELMET),
             new ItemStack(Material.IRON_BOOTS),
             new ItemStack(Material.IRON_ORE, random.nextInt(5)+1),
-            new ItemStack(Material.BREAD, random.nextInt(5)+1),
-            new ItemStack(Material.COAL, random.nextInt(5)+1),
-            new ItemStack(Material.OAK_LOG, random.nextInt(3)+1)
+            new ItemStack(Material.BREAD, random.nextInt(5)+5),
+            new ItemStack(Material.COAL, random.nextInt(5)+5),
+            new ItemStack(Material.OAK_LOG, random.nextInt(3)+5)
             ));
 
     private ArrayList<ItemStack> tierThree = new ArrayList<>(Arrays.asList(
             new ItemStack(Material.BREAD, random.nextInt(5)+1),
             new ItemStack(Material.COAL, random.nextInt(10)+1),
-            new ItemStack(Material.OAK_LOG, random.nextInt(5)+1),
-            new ItemStack(Material.IRON_ORE, random.nextInt(5)+1)
-    ));
+            new ItemStack(Material.OAK_LOG, random.nextInt(8)+5),
+            new ItemStack(Material.IRON_ORE, random.nextInt(5)+1),
+            new ItemStack(Material.TORCH, 32)
+            ));
 
     private ArrayList<ItemStack> tierFour = new ArrayList<>(Arrays.asList(
             new ItemStack(Material.BREAD, random.nextInt(5)+1),

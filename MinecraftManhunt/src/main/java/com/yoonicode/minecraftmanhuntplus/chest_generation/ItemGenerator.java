@@ -68,21 +68,28 @@ public class ItemGenerator {
             new ChestItem(Material.DIAMOND,random.nextInt(3)+1),
             new ChestItem(Material.DIAMOND_SWORD,swordEncants),
             new ChestItem(Material.ENDER_PEARL, random.nextInt(3)+3),
-            new ChestItem(true)
-            ));
-    private final ArrayList<ChestItem> tierTwo = new ArrayList<>(Arrays.asList(
+            new ChestItem(true),
             new ChestItem(Material.IRON_CHESTPLATE, mainArmorEnchants),
             new ChestItem(Material.IRON_LEGGINGS,mainArmorEnchants),
             new ChestItem(Material.IRON_BOOTS,bootsEnchants),
-            new ChestItem(Material.IRON_HELMET,helmetEnchants),
-            new ChestItem(Material.TOTEM_OF_UNDYING,1),
+            new ChestItem(Material.IRON_HELMET,helmetEnchants)
+            ));
+    private final ArrayList<ChestItem> tierTwo = new ArrayList<>(Arrays.asList(
+            new ChestItem(Material.DIAMOND_BOOTS,1),
+            new ChestItem(Material.DIAMOND_HELMET,1),
             new ChestItem(Material.ENDER_PEARL, random.nextInt(5)+1),
             new ChestItem(Material.ENCHANTING_TABLE,1),
             new ChestItem(Material.IRON_INGOT,random.nextInt(16)+6),
             new ChestItem(Material.DIAMOND, 1),
-            new ChestItem(Material.PIGLIN_SPAWN_EGG,5)
+            new ChestItem(Material.PIGLIN_SPAWN_EGG,5),
+            new ChestItem(Material.OBSIDIAN,5),
+            new ChestItem(Material.ARROW,15),
+            new ChestItem(Material.IRON_CHESTPLATE,1 ),
+            new ChestItem(Material.IRON_LEGGINGS, 1),
+            new ChestItem(Material.IRON_BOOTS, bootsEnchants),
+            new ChestItem(Material.IRON_HELMET, helmetEnchants)
 
-    ));
+            ));
     private final ArrayList<ChestItem> tierThree = new ArrayList<>(Arrays.asList(
             new ChestItem(Material.GOLDEN_APPLE,1),
             new ChestItem(Material.IRON_INGOT,random.nextInt(13)+1),
@@ -91,9 +98,10 @@ public class ItemGenerator {
             new ChestItem(Material.GOLD_BLOCK,random.nextInt(2)+1),
             new ChestItem(Material.GOLD_INGOT,random.nextInt(15)+15),
             new ChestItem(Material.ENDER_PEARL,1),
-            new ChestItem(Material.BUCKET,1)
+            new ChestItem(Material.BUCKET,1),
+            new ChestItem(Material.OBSIDIAN,3)
 
-    ));
+            ));
     private final ArrayList<ChestItem> tierFour = new ArrayList<>(Arrays.asList(
             new ChestItem(Material.SHULKER_BOX,1),
             new ChestItem(Material.BEEF,random.nextInt(10)+10),
@@ -104,8 +112,8 @@ public class ItemGenerator {
             new ChestItem(Material.GUNPOWDER,5),
             new ChestItem(Material.FEATHER,7),
             new ChestItem(Material.FLINT,3)
-
             ));
+
     private final ArrayList<ChestItem> tierFive = new ArrayList<>(Arrays.asList(
             new ChestItem(Material.OAK_PLANKS,32),
             new ChestItem(Material.TORCH,32),
@@ -118,7 +126,6 @@ public class ItemGenerator {
             new ChestItem(Material.STICK,10),
             new ChestItem(Material.GOLD_NUGGET,27),
             new ChestItem(Material.IRON_NUGGET,27)
-
     ));
 
     private final ArrayList<ArrayList<ChestItem>> tiers = new ArrayList<>(Arrays.asList(

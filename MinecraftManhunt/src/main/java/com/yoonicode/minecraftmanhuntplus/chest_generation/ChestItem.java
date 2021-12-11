@@ -19,7 +19,7 @@ public class ChestItem implements ItemCreator {
     private ArrayList<Enchantment> enchantments = new ArrayList<>();
     private Random random = new Random();
     private int enchantmentStrengths;
-    private int enchantsGenerated = random.nextInt(2)+1;
+    private int enchantsGenerated = random.nextInt(2);
     private boolean isPotion;
     private ArrayList<PotionType> potionTypes = new ArrayList<>(Arrays.asList(
             PotionType.SPEED,
@@ -70,10 +70,7 @@ public class ChestItem implements ItemCreator {
         }
         // Set the strength of the enchantment
         var enchant = enchantments.get(random.nextInt(enchantments.size()));
-        this.enchantmentStrengths = random.nextInt(enchant.getMaxLevel())+1;
-        if (enchantmentStrengths > 2){
-            this.enchantmentStrengths = 2;
-        }
+        this.enchantmentStrengths = 1;
 
         // Apply enchant
         for (int i = 0; i <= enchantsGenerated; i++) {

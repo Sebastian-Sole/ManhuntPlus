@@ -3,7 +3,12 @@ package com.yoonicode.minecraftmanhuntplus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -15,14 +20,37 @@ import org.bukkit.potion.PotionEffectType;
 
 
 import java.util.Map;
+import java.util.Random;
 
 public class TaskManager {
 
+    private static Random random = new Random();
 
     private final PluginMain main;
 
     public TaskManager(PluginMain main) {
         this.main = main;
+    }
+
+    public static void generateSpawner() {
+        World nether = Bukkit.getWorld("world_nether");
+        double x = generateCoord();
+        double y = 72;
+        double z = generateCoord();
+        Location firstBlock = new Location(nether,x,y,z);
+        Block block = nether.getBlockAt(firstBlock);
+        block.setType(Material.SPAWNER);
+        CreatureSpawner blockState = (CreatureSpawner) block.getState();
+        blockState.setSpawnedType(EntityType.BLAZE);
+        Bukkit.broadcastMessage("Spawner generated at: " + x + ", " + y + ", " + z);
+    }
+
+    private static double generateCoord() {
+        int axis = 1;
+        if (Math.random() < 0.5){
+            axis = -1;
+        }
+        return random.nextDouble(300.0) * axis;
     }
 
     public void updateCompass(){
