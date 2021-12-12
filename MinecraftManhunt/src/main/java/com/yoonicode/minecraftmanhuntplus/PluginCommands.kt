@@ -1,9 +1,9 @@
 package com.yoonicode.minecraftmanhuntplus
 
-import com.yoonicode.minecraftmanhuntplus.PauseHandler.start
-import com.yoonicode.minecraftmanhuntplus.PauseHandler.end
-import com.yoonicode.minecraftmanhuntplus.PauseHandler.pause
-import com.yoonicode.minecraftmanhuntplus.PauseHandler.unPause
+import com.yoonicode.minecraftmanhuntplus.SessionHandler.start
+import com.yoonicode.minecraftmanhuntplus.SessionHandler.end
+import com.yoonicode.minecraftmanhuntplus.SessionHandler.pause
+import com.yoonicode.minecraftmanhuntplus.SessionHandler.unPause
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.HumanEntity
 import java.util.stream.Collectors
@@ -16,6 +16,11 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 
+/**
+ * The Commands used in Manhunt
+ *
+ * @property main main used.
+ */
 class PluginCommands(private val main: PluginMain) : CommandExecutor {
     private var hitHasRegistered // used for startGameByHit option
             = false
@@ -37,6 +42,13 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
     var isCutClean = false
         private set
 
+    /**
+     * Completes the command
+     *
+     * @param args the command being written
+     * @param existingCompletions the completions for the command
+     * @return the completions
+     */
     fun getCompletions(args: Array<String?>, existingCompletions: List<String>): List<String> {
         return when (args[0]) {
             "/hunter", "/runner", "/spectator" -> {
@@ -51,6 +63,15 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         }
     }
 
+    /**
+     * When a command is run inside minecraft
+     *
+     * @param commandSender the commandSender sending the command (is a player)
+     * @param command I have no idea
+     * @param label the first part that comes after the "/". E.g., "/hunter" will have label hunter
+     * @param args a list of after the first part of the command.
+     * @return a boolean for whether the command worked or not.
+     */
     override fun onCommand(commandSender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         when (label) {
             "hunter" -> {
@@ -261,6 +282,15 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
     //            player.teleport(player.getWorld().getSpawnLocation());
     //        }
     //    }
+
+    /**
+     * Checks if the command call is illegal
+     *
+     * @param commandSender the sender of the command
+     * @param args a list of after the first part of the command.
+     * @param command The command being sent
+     * @return a boolean for whether the call is illegal or not
+     */
     private fun illegalCommandCall(commandSender: CommandSender, args: Array<String>, command: String): Boolean {
         gameInSession(commandSender)
         if (args.isNotEmpty()) {
@@ -270,12 +300,25 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         return false
     }
 
+    /**
+     * Check if the game is running
+     *
+     * @param commandSender the sender of the command.
+     */
     private fun gameInSession(commandSender: CommandSender) {
         if (gameIsRunning) {
             commandSender.sendMessage("Game is already in progress. Restart a game to change this option")
         }
     }
 
+    /**
+     * Check if the target of the command is on the desired team already.
+     *
+     * @param commandSender the sender of the command.
+     * @param target the target of the command.
+     * @param team the target team.
+     * @return true if the target is on that team.
+     */
     private fun isOnTargetTeam(commandSender: CommandSender, target: Player, team: List<Player>): Boolean {
         if (team.stream().anyMatch { player: Player -> player.name == target.name }) {
             commandSender.sendMessage("Target is already on this team")
@@ -284,6 +327,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         return false
     }
 
+    /**
+     * Send the message on start of a manhunt game
+     */
     private fun sendStartMessage() {
         Bukkit.broadcastMessage(
                 """${ChatColor.DARK_RED}${ChatColor.UNDERLINE}Berner er gay!${ChatColor.RESET}
@@ -293,6 +339,11 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         )
     }
 
+    /**
+     * The hunters state when the game is started.
+     *
+     * @param headStartDuration the duration that hunters must wait.
+     */
     private fun huntersState(headStartDuration: Int) {
         for (player in main.hunters) {
             player.gameMode = GameMode.SURVIVAL
@@ -310,6 +361,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         }
     }
 
+    /**
+     * The runners state when the game is started.
+     */
     @Suppress("DEPRECATION")
     private fun runnersState() {
         for (player in main.runners) {
@@ -327,12 +381,18 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         }
     }
 
+    /**
+     * Set gamemode for spectators
+     */
     private fun updateSpectators() {
         for (player in main.spectators) {
             player.gameMode = GameMode.SPECTATOR
         }
     }
 
+    /**
+     * Update the world border and time
+     */
     private fun updateWorld() {
         if (worldBorderModified) {
             val wb = main.world?.worldBorder
@@ -345,6 +405,11 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         }
     }
 
+    /**
+     * Cleat the teams
+     *
+     * @return a string message to the players
+     */
     private fun clearTeams(): String {
         val playersCleared = main.hunters.size + main.spectators.size + main.runners.size
         main.hunters.clear()

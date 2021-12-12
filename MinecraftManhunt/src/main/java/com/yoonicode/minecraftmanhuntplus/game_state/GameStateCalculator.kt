@@ -4,26 +4,36 @@ import com.yoonicode.minecraftmanhuntplus.PluginMain
 import org.bukkit.Bukkit
 import kotlin.math.pow
 
+/**
+ * TODO
+ * Calculates the game state.
+ * @property main the main plugin
+ */
 class GameStateCalculator(private val main: PluginMain) {
     private var gameState: Double
     private var runnerAchievements = 0.0
     private var deaths = 0.0
     private val deathWeight = 1.1
-    private val achievementScore = HashMap<Achievement, Int>()
+    private val advancementValueScore = HashMap<AdvancementValue, Int>()
 
-    init { // This field should be from the config.yml
+    init {
         gameState = main.config.getDouble("gameState")
-        for (achievement in Achievement.values()) {
-            achievementScore[achievement] = 0
+        for (achievement in AdvancementValue.values()) {
+            advancementValueScore[achievement] = 0
         }
     }
 
-    fun updateAchievement(achievement: Achievement) {
-        val level = achievement.achievementLevel
+    /**
+     * Updates the game state based on an achievement.
+     *
+     * @param advancementValue the achievement value that the game state should be updated by.
+     */
+    fun updateAchievement(advancementValue: AdvancementValue) {
+        val level = advancementValue.achievementLevel
         if (level > gameState.toInt()) {
-            achievementScore[achievement] = achievementScore[achievement]!! + 1
+            advancementValueScore[advancementValue] = advancementValueScore[advancementValue]!! + 1
             runnerAchievements = level.toDouble()
-            if (achievementScore[achievement]!! >= main.runners.size.toDouble() / 2) {
+            if (advancementValueScore[advancementValue]!! >= main.runners.size.toDouble() / 2) {
                 gameState = calculateGameState()
                 main.gameState = gameState
                 Bukkit.broadcastMessage("Game state is now: " + main.gameState)
@@ -31,6 +41,9 @@ class GameStateCalculator(private val main: PluginMain) {
         }
     }
 
+    /**
+     * Updates the game state based on a death
+     */
     fun updateDeaths() {
         deaths++
         gameState = calculateGameState()
@@ -38,6 +51,11 @@ class GameStateCalculator(private val main: PluginMain) {
         Bukkit.broadcastMessage("Game state is now: " + main.gameState)
     }
 
+    /**
+     * Calculate the game score based on the formula.
+     *
+     * @return game score
+     */
     private fun calculateGameState(): Double {
         return (runnerAchievements + deaths / main.hunters.size.toDouble() * deathWeight.pow(main.runners.size.toDouble())) / 2
     }

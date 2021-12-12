@@ -11,7 +11,16 @@ import org.bukkit.inventory.meta.CompassMeta
 import org.bukkit.potion.PotionEffectType
 import java.util.*
 
+/**
+ * Handle running tasks
+ *
+ * @property main the main plugin
+ */
 class TaskManager(private val main: PluginMain) {
+
+    /**
+     * Update's the compass
+     */
     fun updateCompass() {
         for ((key, value) in main.targets) {
             val hunter = Bukkit.getPlayer(key)
@@ -33,7 +42,7 @@ class TaskManager(private val main: PluginMain) {
                     if (stack.type != Material.COMPASS) continue
                     stack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1) // Make all compasses glow
                     val meta = stack.itemMeta
-                    meta!!.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                    meta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
                     stack.itemMeta = meta
                 }
             } else {
@@ -52,6 +61,9 @@ class TaskManager(private val main: PluginMain) {
         }
     }
 
+    /**
+     * Gives haste
+     */
     fun giveHaste() {
         for (player in main.hunters) {
             player.player!!.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(Int.MAX_VALUE, 3))
@@ -71,9 +83,9 @@ class TaskManager(private val main: PluginMain) {
         private val random = Random()
         fun generateSpawner() {
             val nether = Bukkit.getWorld("world_nether")
-            val x = generateCoord()
+            val x = generateCoordinate()
             val y = 72.0
-            val z = generateCoord()
+            val z = generateCoordinate()
             val firstBlock = Location(nether, x, y, z)
             val block = nether!!.getBlockAt(firstBlock)
             block.type = Material.SPAWNER
@@ -82,7 +94,7 @@ class TaskManager(private val main: PluginMain) {
             Bukkit.broadcastMessage("Spawner generated at: $x, $y, $z")
         }
 
-        private fun generateCoord(): Double {
+        private fun generateCoordinate(): Double {
             var axis = 1
             if (Math.random() < 0.5) {
                 axis = -1

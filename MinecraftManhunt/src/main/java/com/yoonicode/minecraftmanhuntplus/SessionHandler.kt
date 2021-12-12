@@ -2,8 +2,18 @@ package com.yoonicode.minecraftmanhuntplus
 
 import org.bukkit.Bukkit
 
-object PauseHandler {
+/**
+ * Handles the state of the game session, such as starting, stopping, pausing, etc.
+ */
+
+object SessionHandler {
     //todo: add config data for deaths, runner advancements,
+
+    /**
+     * Pause the game.
+     *
+     * @param main main used.
+     */
     @JvmStatic
     fun pause(main: PluginMain) {
         main.config["gameState"] = main.gameState
@@ -12,6 +22,12 @@ object PauseHandler {
         Bukkit.broadcastMessage("Game pause, game state is: " + main.gameState)
     }
 
+    /**
+     * Unpause the game.
+     *
+     * @param main main used.
+     */
+
     @JvmStatic
     fun unPause(main: PluginMain) {
         main.gameState = main.config.getDouble("gameState")
@@ -19,6 +35,12 @@ object PauseHandler {
         main.saveConfig()
         Bukkit.broadcastMessage("Game unpaused, game state is: " + main.gameState)
     }
+
+    /**
+     * Start the game.
+     *
+     * @param main main used.
+     */
 
     @JvmStatic
     fun start(main: PluginMain) {
@@ -34,6 +56,12 @@ object PauseHandler {
         }
     }
 
+
+    /**
+     * Ends the game.
+     *
+     * @param main main used.
+     */
     @JvmStatic
     fun end(main: PluginMain) {
         main.gameState = 0.0
@@ -43,6 +71,11 @@ object PauseHandler {
         Bukkit.broadcastMessage("Game ended, game state is: " + main.gameState)
     }
 
+    /**
+     * When the plugin is enabled (when the server is started).
+     *
+     * @param main main used.
+     */
     @JvmStatic
     fun onEnable(main: PluginMain) {
         if (main.isGameIsOver) {
@@ -54,6 +87,11 @@ object PauseHandler {
         main.logger.info("Game over state is " + main.isGameIsOver + ", should be: " + main.config.getBoolean("gameOver"))
     }
 
+    /**
+     * When the plugin is disabled (when the server is closed).
+     *
+     * @param main main used.
+     */
     @JvmStatic
     fun onDisable(main: PluginMain) {
         if (main.isGameIsOver) {
@@ -63,6 +101,11 @@ object PauseHandler {
         }
     }
 
+    /**
+     * Updates the game state
+     *
+     * @param main main used.
+     */
     // This could cause problems
     @JvmStatic
     fun updateGame(main: PluginMain) {

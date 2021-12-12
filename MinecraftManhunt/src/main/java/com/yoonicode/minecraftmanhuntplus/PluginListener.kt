@@ -1,7 +1,7 @@
 package com.yoonicode.minecraftmanhuntplus
 
 import com.yoonicode.minecraftmanhuntplus.chest_generation.generateItems
-import com.yoonicode.minecraftmanhuntplus.game_state.Achievement
+import com.yoonicode.minecraftmanhuntplus.game_state.AdvancementValue
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -32,10 +32,17 @@ class PluginListener(var main: PluginMain) : Listener {
     private var thrown = false
     private var spawnersGenerated = 0
 
+    /**
+     * When a player clicks
+     * If the item in hand is a compass, display the compass inventory to the player
+     * If the item is an ender eye, update the game score.
+     *
+     * @param e the click event.
+     */
     @EventHandler
     fun onClick(e: PlayerInteractEvent) {
         val player = e.player
-        if (player.equipment!!.itemInMainHand.type == Material.COMPASS) {
+        if (player.equipment?.itemInMainHand?.type == Material.COMPASS) {
             if (!main.playerIsOnTeam(player)) {
                 if (player.isOp) {
                     player.sendMessage("Join a Manhunt team before using the compass!")
@@ -52,16 +59,24 @@ class PluginListener(var main: PluginMain) : Listener {
             }
             val inv = TargetSelectInventory(main)
             inv.displayToPlayer(player)
-        } else if (player.equipment!!.itemInMainHand.type == Material.ENDER_EYE) {
-            if (e.action == Action.RIGHT_CLICK_AIR) {
-                if (!thrown) {
-                    main.gameStateCalculator.updateAchievement(Achievement.EYE_THROW)
-                    thrown = true
+        } else if (player.equipment?.itemInMainHand?.type  == Material.ENDER_EYE) {
+            if (main.runners.contains(player)) {
+                if (e.action == Action.RIGHT_CLICK_AIR) {
+                    if (!thrown) {
+                        main.gameStateCalculator.updateAchievement(AdvancementValue.EYE_THROW)
+                        thrown = true
+                    }
                 }
             }
         }
     }
 
+    /**
+     * When a player click in an inventory
+     * Check if the item clicked is a player head in a compass
+     *
+     * @param event inventory click.
+     */
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
         val hunter = event.whoClicked as Player
@@ -83,19 +98,19 @@ class PluginListener(var main: PluginMain) : Listener {
                 event.isCancelled = true
                 return
             }
-            val itemmeta = clickedHead.itemMeta
-            if (itemmeta !is SkullMeta) {
+            val itemMeta = clickedHead.itemMeta
+            if (itemMeta !is SkullMeta) {
                 main.mainLogger.warning("Clicked head meta is not instanceof SkullMeta.")
-                main.mainLogger.info(itemmeta!!.javaClass.toString())
+                main.mainLogger.info(itemMeta?.javaClass.toString())
                 hunter.sendMessage("Something went wrong: Not an instanceof SkullMeta")
                 event.isCancelled = true
                 return
             }
-            val target = itemmeta.owningPlayer
+            val target = itemMeta.owningPlayer
             var targetName = target!!.name
             if (targetName == null) {
-                targetName = itemmeta.displayName
-                main.mainLogger?.info("Target name is null, applying offline mode workaround. Using item display name: $targetName")
+                targetName = itemMeta.displayName
+                main.mainLogger.info("Target name is null, applying offline mode workaround. Using item display name: $targetName")
             }
             main.targets[hunter.name] = targetName
             event.isCancelled = true
@@ -104,6 +119,12 @@ class PluginListener(var main: PluginMain) : Listener {
         }
     }
 
+    /**
+     * When a player enters a portal
+     * Update the portal location for the hunters' compass
+     *
+     * @param event Portal enter event
+     */
     @EventHandler
     fun onPlayerEnterPortal(event: PlayerPortalEvent) {
         main.portals[event.player.name] = event.from
@@ -133,6 +154,13 @@ class PluginListener(var main: PluginMain) : Listener {
     //            main.commands.worldBorderModified = true;
     //        }
     //    }
+
+    /**
+     * When a player gets respawned
+     * Give player items
+     *
+     * @param event respawn event
+     */
     @EventHandler
     fun onPlayerRespawn(event: PlayerRespawnEvent) {
         if (main.hunters.contains(event.player)) {
@@ -142,6 +170,12 @@ class PluginListener(var main: PluginMain) : Listener {
         }
     }
 
+    /**
+     * When a piglin drops an item
+     * Drop extra items
+     *
+     * @param event entity item drop event
+     */
     @EventHandler
     fun onPiglinTrade(event: EntityDropItemEvent) {
         if (event.entity.type == EntityType.PIGLIN) {
@@ -174,6 +208,12 @@ class PluginListener(var main: PluginMain) : Listener {
         entity.world.dropItem(entity.location, ItemStack(Material.GOLD_INGOT))
     }
 
+    /**
+     * When an entity dies (like an animal)
+     * Cut clean if the animal drops food, or end game if the animal is the ender dragon
+     *
+     * @param event entity death event
+     */
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
         if (main.commands.isCutClean) {
@@ -249,6 +289,12 @@ class PluginListener(var main: PluginMain) : Listener {
         }
     }
 
+    /**
+     * When a player dies
+     * Update game state if hunter, give runners extra items if killer, update death counts
+     *
+     * @param event player death event
+     */
     @Suppress("DEPRECATION")
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
@@ -286,12 +332,18 @@ class PluginListener(var main: PluginMain) : Listener {
         }
     }
 
+    /**
+     * When a player gets an advancement.
+     * Update the gameState if correct advancement.
+     *
+     * @param event advancement done event
+     */
     @EventHandler
     fun onAdvancement(event: PlayerAdvancementDoneEvent) {
         if (main.runners.contains(event.player)) {
             val achievementName = event.advancement.key.key
             val enumName = keyToEnumName(achievementName)
-            val matchList = Arrays.stream(Achievement.values()).filter { achievement: Achievement -> achievement.toString() == enumName }.collect(Collectors.toList())
+            val matchList = Arrays.stream(AdvancementValue.values()).filter { advancementValue: AdvancementValue -> advancementValue.toString() == enumName }.collect(Collectors.toList())
             if (matchList.size != 0) {
                 val match = matchList[0]
                 main.gameStateCalculator.updateAchievement(match)
@@ -299,11 +351,23 @@ class PluginListener(var main: PluginMain) : Listener {
         }
     }
 
+    /**
+     * Turn an advancement key into the string for an AdvancementValue
+     *
+     * @param key string to be changed
+     * @return changed string
+     */
     private fun keyToEnumName(key: String): String {
         val lastSlash = key.lastIndexOf('/')
         return key.substring(lastSlash + 1).uppercase(Locale.getDefault())
     }
 
+    /**
+     * When a block breaks
+     * Handle cut clean and generate chest
+     *
+     * @param event
+     */
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
 //        if (main.getConfig().getBoolean("paused")){
@@ -356,6 +420,12 @@ class PluginListener(var main: PluginMain) : Listener {
         }
     }
 
+    /**
+     * Create a chest in the location provided with items
+     *
+     * @param location location where chest should be generated
+     * @param event the block break event
+     */
     private fun createChest(location: Location, event: BlockBreakEvent) {
         val block = main.world?.getBlockAt(location)
         block?.type = Material.CHEST
@@ -369,6 +439,11 @@ class PluginListener(var main: PluginMain) : Listener {
         Bukkit.broadcastMessage("A chest was generated by " + event.player.name)
     }
 
+    /**
+     * Give player a random drop
+     *
+     * @param player the player receiving the drop
+     */
     //todo: Make and inventory randomizer
     private fun giveRandomDrop(player: Player?) {
         when (random.nextInt(32)) {
@@ -459,7 +534,7 @@ class PluginListener(var main: PluginMain) : Listener {
 
     private fun respawnItems(respawned: Player?) {
         val inventoryToAdd = respawned?.player?.inventory
-        val itemsToAdd = main.itemGenerator.generateItemStack()
+        val itemsToAdd = main.itemGenerator.generateInventory()
         for (itemStack in itemsToAdd) {
             inventoryToAdd?.addItem(itemStack)
         }

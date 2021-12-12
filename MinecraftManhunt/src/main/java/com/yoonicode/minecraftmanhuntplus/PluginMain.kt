@@ -1,7 +1,7 @@
 package com.yoonicode.minecraftmanhuntplus
 
-import com.yoonicode.minecraftmanhuntplus.PauseHandler.onEnable
-import com.yoonicode.minecraftmanhuntplus.PauseHandler.onDisable
+import com.yoonicode.minecraftmanhuntplus.SessionHandler.onEnable
+import com.yoonicode.minecraftmanhuntplus.SessionHandler.onDisable
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.entity.Player
 import java.util.HashMap
@@ -51,6 +51,9 @@ class PluginMain : JavaPlugin() {
                 || spectators.stream().anyMatch { member: Player -> member.name == player.name })
     }
 
+    /**
+     * When the plugin is enabled (when the server is started)
+     */
     override fun onEnable() {
         mainLogger.info("Minecraft Manhunt plugin enabled!")
         val worlds = Bukkit.getWorlds()
@@ -69,6 +72,9 @@ class PluginMain : JavaPlugin() {
         onEnable(this)
     }
 
+    /**
+     * When the plugin is disabled (when the server is closed)
+     */
     override fun onDisable() {
         mainLogger.info("Minecraft Manhunt plugin disabled!")
         onDisable(this)
