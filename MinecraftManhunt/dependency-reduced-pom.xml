@@ -5,7 +5,27 @@
   <artifactId>MinecraftManhunt</artifactId>
   <version>1.5</version>
   <build>
+    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
     <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
@@ -62,7 +82,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.16.1-R0.1-SNAPSHOT</version>
+      <version>1.18.1-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -73,4 +93,7 @@
       <systemPath>${project.basedir}/src/main/resources/maven-shade-plugin-3.2.4.jar</systemPath>
     </dependency>
   </dependencies>
+  <properties>
+    <kotlin.version>1.6.0</kotlin.version>
+  </properties>
 </project>
