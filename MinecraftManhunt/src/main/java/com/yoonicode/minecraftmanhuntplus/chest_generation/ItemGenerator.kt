@@ -5,6 +5,10 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
+/**
+ * TODO
+ * This class generates an ItemStack with a ChestItem.
+ */
 class ItemGenerator {
     private val random = Random()
     private val pickaxeEnchantments = listOf(

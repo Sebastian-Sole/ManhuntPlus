@@ -5,6 +5,12 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.Material
 import java.util.*
 
+/**
+ * TODO
+ * Generates the inventory that a respawned player gets.
+ *
+ * @property main the plugin main being used
+ */
 class InventoryGenerator(var main: PluginMain) {
     private var level = 0
     private var modifier = 0.0
@@ -195,7 +201,15 @@ class InventoryGenerator(var main: PluginMain) {
             tierFive
     )
 
-    fun generateItemStack(): List<ItemStack> {
+    /**
+     * Generates a list of ItemStacks to be added to the inventory
+     *
+     * Generates standard items based on the game score, and a chance at
+     * extra items if the game score's based on the game score's decimals
+     *
+     * @return a list of ItemStacks
+     */
+    fun generateInventory(): List<ItemStack> {
         calculateScore(main.gameState)
         val mainItems = mutableListOf<ItemStack>()
         mainItems.addAll(respawnLevel[level])
@@ -217,6 +231,11 @@ class InventoryGenerator(var main: PluginMain) {
         return mainItems
     }
 
+    /**
+     * Calculates the score
+     *
+     * @param score
+     */
     private fun calculateScore(score: Double) {
         level = score.toInt()
         val scoreAsString = java.lang.Double.toString(score)
@@ -224,6 +243,12 @@ class InventoryGenerator(var main: PluginMain) {
         modifier = getDecimal(decimalString)
     }
 
+    /**
+     * Gets the decimal value in the game score
+     *
+     * @param s game score
+     * @return the decimal value
+     */
     private fun getDecimal(s: String): Double {
         val fullDecimal = "0$s"
         return fullDecimal.toDouble()

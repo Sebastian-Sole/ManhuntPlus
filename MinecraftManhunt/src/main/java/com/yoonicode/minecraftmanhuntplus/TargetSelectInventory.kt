@@ -7,6 +7,11 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.Material
 import org.bukkit.inventory.meta.SkullMeta
 
+/**
+ * This handles the inventory of a compass
+ *
+ * @property main the main plugin
+ */
 class TargetSelectInventory(var main: PluginMain) {
     private var inventory: Inventory = Bukkit.createInventory(null, 9, INVENTORY_NAME)
 

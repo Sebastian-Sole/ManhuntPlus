@@ -9,7 +9,10 @@ import org.bukkit.potion.PotionData
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import java.util.*
 
-
+/**
+ * TODO
+ * A chest item is an ItemStack with enchantments, and or number generated.
+ */
 class ChestItem {
     private var material: Material? = null
     private var numberGenerated = 1
@@ -29,11 +32,17 @@ class ChestItem {
             PotionType.JUMP
     )
 
+    /**
+     * Creates a ChestItem with the material, and the amount to be generated.
+     */
     constructor(material: Material?, numberGenerated: Int) {
         this.material = material
         this.numberGenerated = numberGenerated
     }
 
+    /**
+     * Creates a ChestItem with the material, and the enchantments the item can have.
+     */
     constructor(material: Material?, enchantments: List<Enchantment>?) {
         this.material = material
         this.enchantments.addAll(enchantments!!)
