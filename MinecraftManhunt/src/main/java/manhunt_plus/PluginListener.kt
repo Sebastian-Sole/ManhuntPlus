@@ -306,8 +306,8 @@ class PluginListener(var main: PluginMain) : Listener {
                     val killer = Bukkit.getPlayer(event.entity.killer!!.name)
                     main.hunterDeaths[event.entity.player as Player] = main.hunterDeaths[event.entity.player]!! + 1 // Increases death total for hunter
                     if (main.commands.runnerHelp) {
-                        killer?.player?.maxHealth = event.entity.killer?.maxHealth?.plus(2.0)!!
-                        killer?.player?.healthScale = event.entity.killer!!.healthScale + 2.0
+                        killer?.player?.maxHealth = event.entity.killer?.maxHealth?.plus(main.health/10)!!
+                        killer?.player?.healthScale = event.entity.killer!!.healthScale + main.health/10
                     }
                     if (main.commands.extraDrops) {
                         giveRandomDrop(killer)

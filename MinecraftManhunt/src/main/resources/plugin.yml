@@ -72,3 +72,7 @@ commands:
     description: Unpauses the game
     usage: /unpause
     permission: manhunt_plus.unpause
+  health:
+    description: Sets the health of the player
+    usage: /health <value>
+    permission: manhunt_plus.health

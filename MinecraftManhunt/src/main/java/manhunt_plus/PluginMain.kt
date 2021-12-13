@@ -35,6 +35,7 @@ class PluginMain : JavaPlugin() {
     val taskManager = TaskManager(this)
     var gameState = 0.0
     var itemGenerator: InventoryGenerator = InventoryGenerator(this)
+    var health: Double = 20.0
 
     var isPaused = false
     var isGameIsOver = false
