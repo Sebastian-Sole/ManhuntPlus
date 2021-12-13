@@ -59,6 +59,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 mutableListOf("0", "30", "60")
 
             }
+            "/health" -> {
+                mutableListOf("20", "40")
+            }
             else -> existingCompletions
         }
     }
@@ -252,6 +255,7 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 chestGenerate = true
                 hasteBoost = true
                 isCutClean = true
+                main.health = 40.0
                 commandSender.sendMessage("All helper methods are enabled")
                 return true
             }
@@ -273,6 +277,22 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 }
                 unPause(main)
             }
+            "health" -> {
+                if (gameInSession(commandSender)) return true
+                if (args.isEmpty()) {
+                    commandSender.sendMessage("Must provide health value (number of half-hearts. Standard is 20)")
+                    return true
+                }
+                else if (args.size > 1){
+                    commandSender.sendMessage("Invalid format. Use /health <number>")
+                    return true
+                }
+                try {
+                    main.health = args[0].toDouble()
+                } catch (e: NumberFormatException){
+                    commandSender.sendMessage("Please provide a valid number")
+                }
+            }
         }
         return false
     }
@@ -292,7 +312,7 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
      * @return a boolean for whether the call is illegal or not
      */
     private fun illegalCommandCall(commandSender: CommandSender, args: Array<String>, command: String): Boolean {
-        gameInSession(commandSender)
+        if (gameInSession(commandSender)) return true
         if (args.isNotEmpty()) {
             commandSender.sendMessage("Illegal format. Use /$command.")
             return true
@@ -305,10 +325,12 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
      *
      * @param commandSender the sender of the command.
      */
-    private fun gameInSession(commandSender: CommandSender) {
+    private fun gameInSession(commandSender: CommandSender) : Boolean {
         if (gameIsRunning) {
             commandSender.sendMessage("Game is already in progress. Restart a game to change this option")
+            return true
         }
+        return false
     }
 
     /**
@@ -344,14 +366,13 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
      *
      * @param headStartDuration the duration that hunters must wait.
      */
+    @Suppress("DEPRECATION")
     private fun huntersState(headStartDuration: Int) {
         for (player in main.hunters) {
-            player.gameMode = GameMode.SURVIVAL
             player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 20 * headStartDuration, 5))
             player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 20 * headStartDuration, 3))
             player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * headStartDuration, 10))
-            player.health = 20.0
-            player.foodLevel = 20
+            startState(player)
             if (main.config.getBoolean("clearHunterInvOnStart", false)) {
                 player.inventory.clear()
                 player.exp = 0f
@@ -361,18 +382,23 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         }
     }
 
+    private fun startState(player: Player) {
+        player.gameMode = GameMode.SURVIVAL
+        player.healthScale = main.health
+        player.maxHealth = main.health
+        player.health = main.health
+        player.foodLevel = 20
+    }
+
     /**
      * The runners state when the game is started.
      */
     @Suppress("DEPRECATION")
     private fun runnersState() {
         for (player in main.runners) {
-            player.gameMode = GameMode.SURVIVAL
-            player.healthScale = 20.0
-            player.maxHealth = 20.0
-            player.health = 20.0
+            startState(player)
             player.foodLevel = 20
-            player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 450, 1))
+            player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 400, 1))
             if (main.config.getBoolean("clearRunnerInvOnStart", false)) {
                 player.inventory.clear()
                 player.exp = 0f
@@ -421,23 +447,24 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
     companion object {
         @JvmField
         val registeredCommands = arrayOf(
-                "hunter",
-                "runner",
-                "spectator",
-                "clearteams",
-                "start",
-                "end",
-                "compass",
-                "setheadstart",
-                "runnerhelp",
-                "hunterhelp",
-                "extradrops",
-                "chestgenerate",
-                "hasteboost",
-                "allhelp",
-                "cutclean",
-                "pause",
-                "unpause"
+            "hunter",
+            "runner",
+            "spectator",
+            "clearteams",
+            "start",
+            "end",
+            "compass",
+            "setheadstart",
+            "runnerhelp",
+            "hunterhelp",
+            "extradrops",
+            "chestgenerate",
+            "hasteboost",
+            "allhelp",
+            "cutclean",
+            "pause",
+            "unpause",
+            "health"
         )
     }
 }
