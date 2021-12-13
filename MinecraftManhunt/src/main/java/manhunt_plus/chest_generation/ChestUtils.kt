@@ -1,4 +1,4 @@
-package com.yoonicode.minecraftmanhuntplus.chest_generation
+package manhunt_plus.chest_generation
 
 import org.bukkit.inventory.ItemStack
 import java.util.*

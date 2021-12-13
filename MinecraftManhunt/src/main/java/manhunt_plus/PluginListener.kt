@@ -1,7 +1,7 @@
-package com.yoonicode.minecraftmanhuntplus
+package manhunt_plus
 
-import com.yoonicode.minecraftmanhuntplus.chest_generation.generateItems
-import com.yoonicode.minecraftmanhuntplus.game_state.AdvancementValue
+import manhunt_plus.chest_generation.generateItems
+import manhunt_plus.game_state.AdvancementValue
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location

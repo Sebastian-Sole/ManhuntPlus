@@ -1,6 +1,6 @@
-package com.yoonicode.minecraftmanhuntplus.game_state
+package manhunt_plus.game_state
 
-import com.yoonicode.minecraftmanhuntplus.PluginMain
+import manhunt_plus.PluginMain
 import org.bukkit.Bukkit
 import kotlin.math.pow
 

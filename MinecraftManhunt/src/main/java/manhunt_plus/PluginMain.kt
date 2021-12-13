@@ -1,13 +1,13 @@
-package com.yoonicode.minecraftmanhuntplus
+package manhunt_plus
 
-import com.yoonicode.minecraftmanhuntplus.SessionHandler.onEnable
-import com.yoonicode.minecraftmanhuntplus.SessionHandler.onDisable
+import manhunt_plus.SessionHandler.onEnable
+import manhunt_plus.SessionHandler.onDisable
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.entity.Player
 import java.util.HashMap
 import org.bukkit.World
-import com.yoonicode.minecraftmanhuntplus.respawn_inventory.InventoryGenerator
-import com.yoonicode.minecraftmanhuntplus.game_state.GameStateCalculator
+import manhunt_plus.respawn_inventory.InventoryGenerator
+import manhunt_plus.game_state.GameStateCalculator
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.util.logging.Logger

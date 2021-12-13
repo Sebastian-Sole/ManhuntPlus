@@ -1,9 +1,9 @@
-package com.yoonicode.minecraftmanhuntplus
+package manhunt_plus
 
-import com.yoonicode.minecraftmanhuntplus.SessionHandler.start
-import com.yoonicode.minecraftmanhuntplus.SessionHandler.end
-import com.yoonicode.minecraftmanhuntplus.SessionHandler.pause
-import com.yoonicode.minecraftmanhuntplus.SessionHandler.unPause
+import manhunt_plus.SessionHandler.start
+import manhunt_plus.SessionHandler.end
+import manhunt_plus.SessionHandler.pause
+import manhunt_plus.SessionHandler.unPause
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.HumanEntity
 import java.util.stream.Collectors
