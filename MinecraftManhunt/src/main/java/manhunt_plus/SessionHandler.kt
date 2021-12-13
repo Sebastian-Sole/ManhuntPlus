@@ -1,4 +1,4 @@
-package com.yoonicode.minecraftmanhuntplus
+package manhunt_plus
 
 import org.bukkit.Bukkit
 

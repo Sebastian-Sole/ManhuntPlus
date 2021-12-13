@@ -1,4 +1,4 @@
-package com.yoonicode.minecraftmanhuntplus.game_state
+package manhunt_plus.game_state
 
 /**
  * TODO

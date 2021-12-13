@@ -1,6 +1,6 @@
-package com.yoonicode.minecraftmanhuntplus.respawn_inventory
+package manhunt_plus.respawn_inventory
 
-import com.yoonicode.minecraftmanhuntplus.PluginMain
+import manhunt_plus.PluginMain
 import org.bukkit.inventory.ItemStack
 import org.bukkit.Material
 import java.util.*
