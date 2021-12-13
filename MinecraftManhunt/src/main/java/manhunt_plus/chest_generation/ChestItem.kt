@@ -18,7 +18,7 @@ class ChestItem {
     private var numberGenerated = 1
     private val enchantments = mutableListOf<Enchantment>()
     private val random = Random()
-    private var enchantmentStrengths = 0
+    private var enchantmentStrengths = 1
     private val enchantsGenerated = random.nextInt(2)
     private var isPotion = false
     private val potionTypes = listOf(
@@ -61,32 +61,33 @@ class ChestItem {
         if (isPotion) {
             val potion = ItemStack(Material.POTION, 1)
             val meta = potion.itemMeta as PotionMeta?
-            meta!!.basePotionData = PotionData(potionTypes[random.nextInt(potionTypes.size)])
+            meta?.basePotionData = PotionData(potionTypes[random.nextInt(potionTypes.size)])
             potion.itemMeta = meta
             return potion
         }
-        val itemStack = material?.let { ItemStack(it, numberGenerated) }
-        if (enchantsGenerated == 0) {
-            return itemStack
-        }
-        // If item to be generated is unenchantable, then just return the item
-        if (enchantments.size == 0) {
-            return itemStack
-        }
-        // Set the strength of the enchantment
-        val enchant = enchantments[random.nextInt(enchantments.size)]
-        enchantmentStrengths = 1
 
-        // Apply enchant
-        for (i in 0..enchantsGenerated) {
-            if (material == Material.ENCHANTED_BOOK) {
-                val meta = itemStack?.itemMeta as EnchantmentStorageMeta?
-                meta!!.addStoredEnchant(enchant, enchantmentStrengths, true)
-                itemStack?.itemMeta = meta
-            } else {
-                itemStack?.addEnchantment(enchantments[random.nextInt(enchantments.size)], enchantmentStrengths)
+        val itemStack = material?.let { ItemStack(it, numberGenerated) }
+
+        // Check if material is enchanted book
+        if (material == Material.ENCHANTED_BOOK) {
+            val meta = itemStack?.itemMeta as EnchantmentStorageMeta?
+            // Add a single enchantment, with the strength
+            meta?.addStoredEnchant(enchantments[random.nextInt(enchantments.size)], enchantmentStrengths, true)
+            itemStack?.itemMeta = meta
+        }
+        // If it isn't an enchanted book
+        else {
+            if (enchantsGenerated == 0) {
+                return itemStack
             }
+            // If item to be generated is unenchantable, then just return the item
+            if (enchantments.size == 0) {
+                return itemStack
+            }
+            // Set the strength of the enchantment
+            itemStack?.addEnchantment(enchantments[random.nextInt(enchantments.size)], enchantmentStrengths)
         }
         return itemStack
+
     }
 }

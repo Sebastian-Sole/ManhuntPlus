@@ -374,11 +374,21 @@ class PluginListener(var main: PluginMain) : Listener {
 //            event.getPlayer().sendMessage("Game is paused, wait until the game starts until you break blocks");
 //            event.setCancelled(true);
 //        }
+        // If chest generate is on
+        if (main.commands.chestGenerate) { // THIS MUST BE BEFORE CUT CLEAN CHECK
+            val numberGenerated = random.nextInt(5)
+            main.mainLogger.info("$numberGenerated")
+            if (numberGenerated == 1) {
+                val blockBrokenLocation = event.block.location
+                createChest(blockBrokenLocation, event)
+            }
+        }
         if (main.commands.isCutClean) {
             val blockBroken = event.block
             val world = blockBroken.world
             val location = blockBroken.location
             when (event.block.type) {
+                //todo: Refactor this code
                 Material.IRON_ORE, Material.DEEPSLATE_IRON_ORE -> {
                     event.isCancelled = true
                     blockBroken.type = Material.AIR
@@ -410,14 +420,7 @@ class PluginListener(var main: PluginMain) : Listener {
                 else -> return
             }
         }
-        // If chest generate is on
-        if (main.commands.chestGenerate) {
-            val numberGenerated = random.nextInt(500)
-            if (numberGenerated == 69) {
-                val blockBrokenLocation = event.block.location
-                createChest(blockBrokenLocation, event)
-            }
-        }
+
     }
 
     /**
