@@ -1,15 +1,20 @@
 package manhunt_plus
 
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.CreatureSpawner
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.CompassMeta
 import org.bukkit.potion.PotionEffectType
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Handle running tasks
@@ -72,6 +77,48 @@ class TaskManager(private val main: PluginMain) {
             player.player!!.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(Int.MAX_VALUE, 3))
         }
     } //
+
+    /**
+     * Displays the coordinates of the closest teammate in the action bar
+     *
+     * @param player the player receiving the coordinates
+     * @param teammates the teammates
+     */
+    fun updateActionBar(player: Player, teammates: MutableList<Player> ) {
+        val playerX = player.location.x
+        val playerZ = player.location.z
+
+        val teammateLocation = closestTeammateCoords(playerX, playerZ, teammates)
+
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(
+            """ ${ChatColor.BOLD} ${ChatColor.RED} x: ${teammateLocation?.x?.roundToInt()}, y: ${teammateLocation?.y?.roundToInt()}, z: ${teammateLocation?.z?.roundToInt()}"""));
+    }
+
+    /**
+     * Returns the location to the closest teammate
+     *
+     * @param playerX the player's X coordinate
+     * @param playerZ the player's Z coordinate
+     * @param teammates the teammates of that player
+     * @return the closest location
+     */
+    private fun closestTeammateCoords(playerX: Double, playerZ: Double, teammates: MutableList<Player>): Location? {
+        var closestLocation: Location? = null;
+        var closestDistance: Double = Double.MAX_VALUE
+        for (player in teammates){
+
+            val xAxisDifference = player.location.x - playerX
+            val zAxisDifference = player.location.z - playerZ
+
+            val totalDifference = xAxisDifference + zAxisDifference
+            if (totalDifference < closestDistance && totalDifference != 0.0){
+                closestLocation = player.location
+                closestDistance = totalDifference
+            }
+        }
+
+        return closestLocation
+    }
 
     //    public void showGlow(){
     //        for (Player player : main.runners)
