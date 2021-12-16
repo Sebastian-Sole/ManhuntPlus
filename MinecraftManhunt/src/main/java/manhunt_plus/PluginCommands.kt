@@ -373,11 +373,6 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 20 * headStartDuration, 3))
             player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * headStartDuration, 10))
             startState(player)
-            if (main.config.getBoolean("clearHunterInvOnStart", false)) {
-                player.inventory.clear()
-                player.exp = 0f
-                player.level = 0
-            }
             player.inventory.addItem(ItemStack(Material.COMPASS, 1))
         }
     }
@@ -388,6 +383,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         player.maxHealth = main.health
         player.health = main.health
         player.foodLevel = 20
+        player.inventory.clear()
+        player.exp = 0f
+        player.level = 0
     }
 
     /**
@@ -399,11 +397,6 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             startState(player)
             player.foodLevel = 20
             player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 400, 1))
-            if (main.config.getBoolean("clearRunnerInvOnStart", false)) {
-                player.inventory.clear()
-                player.exp = 0f
-                player.level = 0
-            }
         }
     }
 
