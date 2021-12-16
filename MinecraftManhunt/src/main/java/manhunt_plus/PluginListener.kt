@@ -31,6 +31,7 @@ class PluginListener(var main: PluginMain) : Listener {
     private val random = Random()
     private var thrown = false
     private var spawnersGenerated = 0
+    private var firstEntry = false
 
     /**
      * When a player clicks
@@ -129,12 +130,15 @@ class PluginListener(var main: PluginMain) : Listener {
     fun onPlayerEnterPortal(event: PlayerPortalEvent) {
         main.portals[event.player.name] = event.from
         //todo: Add timer for runner compass
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
-            if (spawnersGenerated < 5) {
-                TaskManager.generateSpawner()
-                spawnersGenerated++
-            }
-        }, 12000L, 2400L)
+        if (!firstEntry) {
+            firstEntry = true
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
+                if (spawnersGenerated < 5) {
+                    TaskManager.generateSpawner()
+                    spawnersGenerated++
+                }
+            }, 12000L, 2400L)
+        }
     }
 
     //    @EventHandler
@@ -376,9 +380,8 @@ class PluginListener(var main: PluginMain) : Listener {
 //        }
         // If chest generate is on
         if (main.commands.chestGenerate) { // THIS MUST BE BEFORE CUT CLEAN CHECK
-            val numberGenerated = random.nextInt(5)
-            main.mainLogger.info("$numberGenerated")
-            if (numberGenerated == 1) {
+            val numberGenerated = random.nextInt(550)
+            if (numberGenerated == 69) {
                 val blockBrokenLocation = event.block.location
                 createChest(blockBrokenLocation, event)
             }
