@@ -1,6 +1,6 @@
 package manhunt_plus
 
-import manhunt_plus.chest_generation.generateItems
+import manhunt_plus.chest_generation.generateChestItems
 import manhunt_plus.game_state.AdvancementValue
 import org.bukkit.*
 import org.bukkit.block.Chest
@@ -435,7 +435,7 @@ class PluginListener(var main: PluginMain) : Listener {
         event.isCancelled = true
         val chest = block.state as Chest
         val inv = chest.inventory
-        val itemsList = generateItems()
+        val itemsList = generateChestItems()
         for (stack in itemsList) {
             inv.addItem(stack)
         }
