@@ -2,10 +2,7 @@ package manhunt_plus
 
 import manhunt_plus.chest_generation.generateItems
 import manhunt_plus.game_state.AdvancementValue
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Location
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.block.Chest
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
@@ -383,7 +380,7 @@ class PluginListener(var main: PluginMain) : Listener {
             val numberGenerated = random.nextInt(550)
             if (numberGenerated == 69) {
                 val blockBrokenLocation = event.block.location
-                createChest(blockBrokenLocation, event)
+                createChest(blockBrokenLocation, event, event.player.world)
             }
         }
         if (main.commands.isCutClean) {
@@ -432,11 +429,11 @@ class PluginListener(var main: PluginMain) : Listener {
      * @param location location where chest should be generated
      * @param event the block break event
      */
-    private fun createChest(location: Location, event: BlockBreakEvent) {
-        val block = main.world?.getBlockAt(location)
-        block?.type = Material.CHEST
+    private fun createChest(location: Location, event: BlockBreakEvent, world: World) {
+        val block = world.getBlockAt(location)
+        block.type = Material.CHEST
         event.isCancelled = true
-        val chest = block?.state as Chest
+        val chest = block.state as Chest
         val inv = chest.inventory
         val itemsList = generateItems()
         for (stack in itemsList) {
