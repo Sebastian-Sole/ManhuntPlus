@@ -3,6 +3,8 @@ package manhunt_plus
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.World
+import org.bukkit.block.Block
 import org.bukkit.block.CreatureSpawner
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
@@ -91,7 +93,37 @@ class TaskManager(private val main: PluginMain) {
             block.type = Material.SPAWNER
             val blockState = block.state as CreatureSpawner
             blockState.spawnedType = EntityType.BLAZE
+            generatePlatform(block, nether)
             Bukkit.broadcastMessage("Spawner generated at: $x, $y, $z")
+        }
+
+        private fun generatePlatform(block: Block, nether: World) {
+            val spawnerBlockLocation = block.location
+            val locX = spawnerBlockLocation.x.toInt()
+            val locY = spawnerBlockLocation.y.toInt() - 1
+            val locZ = spawnerBlockLocation.z.toInt()
+
+            // Make 4 quadrants around the block
+            for (i in 1..5){
+                for (j in 1..5){
+                    nether.getBlockAt(locX + i, locY, locZ+j).type = Material.OBSIDIAN
+                }
+            }
+            for (i in 1..5){
+                for (j in 1..5){
+                    nether.getBlockAt(locX - i, locY, locZ+j).type = Material.OBSIDIAN
+                }
+            }
+            for (i in 1..5){
+                for (j in 1..5){
+                    nether.getBlockAt(locX - i, locY, locZ-j).type = Material.OBSIDIAN
+                }
+            }
+            for (i in 1..5){
+                for (j in 1..5){
+                    nether.getBlockAt(locX + i, locY, locZ-j).type = Material.OBSIDIAN
+                }
+            }
         }
 
         private fun generateCoordinate(): Double {
