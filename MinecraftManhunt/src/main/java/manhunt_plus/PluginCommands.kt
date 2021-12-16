@@ -374,7 +374,11 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * headStartDuration, 10))
             startState(player)
             player.inventory.addItem(ItemStack(Material.COMPASS, 1))
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
+                main.taskManager.updateActionBar(player, main.hunters)
+            }, 10L, 20L)
         }
+
     }
 
     private fun startState(player: Player) {
@@ -397,6 +401,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             startState(player)
             player.foodLevel = 20
             player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 400, 1))
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
+                main.taskManager.updateActionBar(player, main.runners)
+            }, 0L, 20L)
         }
     }
 
