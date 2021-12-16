@@ -126,6 +126,10 @@ class TaskManager(private val main: PluginMain) {
         return closestLocation
     }
 
+    fun supplyDrop() {
+        TODO("Not yet implemented")
+    }
+
     //    public void showGlow(){
     //        for (Player player : main.runners)
     //            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.runners);

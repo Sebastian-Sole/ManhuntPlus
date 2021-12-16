@@ -1,6 +1,4 @@
 package manhunt_plus.chest_generation
-
-import ItemGenerator
 import org.bukkit.inventory.ItemStack
 import java.util.*
 

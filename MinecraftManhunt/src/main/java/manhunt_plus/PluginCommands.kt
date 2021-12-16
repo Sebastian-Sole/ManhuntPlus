@@ -22,6 +22,7 @@ import org.bukkit.command.CommandSender
  * @property main main used.
  */
 class PluginCommands(private val main: PluginMain) : CommandExecutor {
+    private var supplyDrops: Boolean = false;
     private var hitHasRegistered // used for startGameByHit option
             = false
     @JvmField
@@ -54,7 +55,7 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             "/hunter", "/runner", "/spectator" -> {
                 Bukkit.getOnlinePlayers().stream().map { obj: HumanEntity -> obj.name }.collect(Collectors.toList())
             }
-            "/start", "/end", "/chestgenerate", "/compass", "/clearteams", "/hasteboost", "/allhelp", "/cutclean", "/pause", "/unpause" -> mutableListOf()
+            "/start", "/end", "/chestgenerate", "/compass", "/clearteams", "/hasteboost", "/allhelp", "/cutclean", "/pause", "/unpause", "/supplydrops" -> mutableListOf()
             "/setheadstart" -> {
                 mutableListOf("0", "30", "60")
 
@@ -149,6 +150,11 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 compassTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(main, { main.taskManager.updateCompass() }, 0L, 20L)
                 if (hasteBoost) {
                     Bukkit.getScheduler().scheduleSyncRepeatingTask(main, { main.taskManager.giveHaste() }, 460L, 1200L)
+                }
+                if (supplyDrops){
+                    Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
+                        main.taskManager.supplyDrop()
+                    },24000L, 24000L)
                 }
 
                 //todo: How often does this actually need to repeat?
@@ -256,6 +262,7 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 hasteBoost = true
                 isCutClean = true
                 main.health = 40.0
+                supplyDrops = true
                 commandSender.sendMessage("All helper methods are enabled")
                 return true
             }
@@ -292,6 +299,12 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 } catch (e: NumberFormatException){
                     commandSender.sendMessage("Please provide a valid number")
                 }
+            }
+            "supplydrops" -> {
+                if (illegalCommandCall(commandSender,args, "supplydrops" )) return true
+                supplyDrops = !supplyDrops
+                commandSender.sendMessage("Supply drops is set to: $supplyDrops")
+                return true
             }
         }
         return false
@@ -464,7 +477,8 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             "cutclean",
             "pause",
             "unpause",
-            "health"
+            "health",
+            "supplydrops"
         )
     }
 }
