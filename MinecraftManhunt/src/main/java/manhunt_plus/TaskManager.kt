@@ -89,7 +89,6 @@ class TaskManager(private val main: PluginMain) {
         val playerZ = player.location.z
 
         val teammateLocation = closestTeammateCoords(playerX, playerZ, teammates)
-
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(
             """ ${ChatColor.BOLD} ${ChatColor.RED} x: ${teammateLocation?.x?.roundToInt()}, y: ${teammateLocation?.y?.roundToInt()}, z: ${teammateLocation?.z?.roundToInt()}"""));
     }
@@ -100,11 +99,16 @@ class TaskManager(private val main: PluginMain) {
      * @param playerX the player's X coordinate
      * @param playerZ the player's Z coordinate
      * @param teammates the teammates of that player
-     * @return the closest location
+     * @return the location of the closest teammate, or the world's spawn-point if the player has no teammates
      */
     private fun closestTeammateCoords(playerX: Double, playerZ: Double, teammates: MutableList<Player>): Location? {
         var closestLocation: Location? = null;
         var closestDistance: Double = Double.MAX_VALUE
+        // If the player has no teammates
+        if (teammates.size == 1){
+            return main.world?.spawnLocation
+        }
+        // Find the closest teammate
         for (player in teammates){
 
             val xAxisDifference = player.location.x - playerX
