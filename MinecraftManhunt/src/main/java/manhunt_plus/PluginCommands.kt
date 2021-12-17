@@ -389,7 +389,6 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 20 * headStartDuration, 3))
             player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * headStartDuration, 10))
             startState(player)
-            player.inventory.addItem(ItemStack(Material.COMPASS, 1))
             Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
                 main.taskManager.updateActionBar(player, main.hunters)
             }, 10L, 20L)
@@ -406,6 +405,7 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         player.inventory.clear()
         player.exp = 0f
         player.level = 0
+        player.inventory.addItem(ItemStack(Material.COMPASS, 1))
     }
 
     /**
