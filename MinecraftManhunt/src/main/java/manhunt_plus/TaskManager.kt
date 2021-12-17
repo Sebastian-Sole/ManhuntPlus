@@ -1,7 +1,6 @@
 package manhunt_plus
 
-import manhunt_plus.chest_generation.generateChestItems
-import manhunt_plus.chest_generation.generateSupplyDropItems
+import manhunt_plus.chest_generation.createSupplyDropChest
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
@@ -10,7 +9,6 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
-import org.bukkit.block.Chest
 import org.bukkit.block.CreatureSpawner
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
@@ -175,13 +173,25 @@ class TaskManager(private val main: PluginMain) {
         // how should this be implemented if the teams are in two different worlds?
     }
 
-    fun createSupplyDrop(location: Location, world: World) {
-        createChestDrop(world, location)
-        generateBox(world,location)
+    /**
+     * Creates a supply drop (a box of obsidian with a chest inside containing good items)
+     *
+     * @param location where the supply drop is created
+     * @param world which world the supply drop is created in
+     */
+    private fun createSupplyDrop(location: Location, world: World) {
+        createSupplyDropChest(world, location)
+        generateSupplyDropBox(world,location)
         Bukkit.broadcastMessage("A supply drop has landed at: ${location.x}, ${location.y}, ${location.z}")
     }
 
-    private fun generateBox(world: World, chestBlockLocation: Location) {
+    /**
+     * The obsidian box surrounding the supply drop chest
+     *
+     * @param world the world which the supply drop box is generated in
+     * @param chestBlockLocation the location of the chest block
+     */
+    private fun generateSupplyDropBox(world: World, chestBlockLocation: Location) {
         // x = +3
         for (i in 0 .. 3){
             for (j in 0..3) {
@@ -225,17 +235,13 @@ class TaskManager(private val main: PluginMain) {
 
     }
 
-    private fun createChestDrop(world: World, location: Location) {
-        val block = world.getBlockAt(location)
-        block.type = Material.CHEST
-        val chest = block.state as Chest
-        val inv = chest.inventory
-        val itemsList = generateSupplyDropItems()
-        for (stack in itemsList) {
-            inv.addItem(stack)
-        }
-    }
 
+    /**
+     * Gets the average coordinates of the team provided
+     *
+     * @param team the team of which the coordinates are being returned
+     * @return the average coordinates (Location) of that team
+     */
     private fun teamCoords(team: List<Player>): Location {
         var teamX = 0.0;
         var teamY = 0.0;
@@ -253,9 +259,39 @@ class TaskManager(private val main: PluginMain) {
         return Location(world, (teamX/team.size).toInt().toDouble(),(teamY/team.size).toInt().toDouble(),(teamZ/team.size).toInt().toDouble())
     }
 
+    /**
+     * Finds the world which most of the team members are in. If tied, it should be a "special" world, (nether or end)
+     * @param teamWorlds
+     * @return the world which the majority of team members are in.
+     */
     private fun mostFrequentWorld(teamWorlds: MutableList<World>): World? {
-        val numbersByElement = teamWorlds.groupingBy { it }.eachCount()
-        return numbersByElement.maxByOrNull { it.value }?.key
+        val worldCount = mutableMapOf<World, Int>()
+        for (world: World in teamWorlds){
+            if (!worldCount.containsKey(world)){
+                worldCount[world] = 1
+            }
+            else{
+                worldCount[world] = requireNotNull(worldCount[world]?.plus(1))
+            }
+        }
+        var currentWorld: World? = main.world
+        var currentCount = 0
+        for (entry: Map.Entry<World, Int> in worldCount.entries){
+            // If the world count for the team's list is the same as the "current" world count
+            if (entry.value == currentCount){
+                /* If the entry's world is not normal (nether or end),
+                 and the "current" world is, update it to the entry's world */
+                if (currentWorld?.environment == World.Environment.NORMAL && entry.key.environment != World.Environment.NORMAL){
+                    currentWorld = entry.key
+                }
+            }
+            // If the world count for the team's list is not the same as the "current" world count
+            else {
+                currentWorld = entry.key
+                currentCount = entry.value
+            }
+        }
+        return currentWorld
     }
 
     //    public void showGlow(){

@@ -303,7 +303,6 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             "supplydrops" -> {
                 if (illegalCommandCall(commandSender,args, "supplydrops" )) return true
                 supplyDrops = !supplyDrops
-                main.world?.spawnLocation?.let { main.taskManager.createSupplyDrop(it, main.world!!) }
                 commandSender.sendMessage("Supply drops is set to: $supplyDrops")
                 return true
             }
