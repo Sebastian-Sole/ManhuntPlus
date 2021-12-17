@@ -48,10 +48,6 @@ class PluginListener(var main: PluginMain) : Listener {
                 }
                 return
             }
-            if (main.runners.contains(player) && !main.debugMode) {
-                player.sendMessage("Speedrunners cannot use the compass!")
-                return
-            }
             if (main.commands.compassTask == -1) {
                 player.sendMessage("Start the Manhunt game before using the compass!")
                 return
