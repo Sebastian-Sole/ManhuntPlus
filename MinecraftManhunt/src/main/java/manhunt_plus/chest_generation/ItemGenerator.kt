@@ -101,7 +101,7 @@ class ItemGenerator {
     )
     private val chestTierFour = listOf(
         ChestItem(Material.SHULKER_BOX, 1),
-        ChestItem(Material.BEEF, random.nextInt(10) + 10),
+        ChestItem(Material.COOKED_BEEF, random.nextInt(10) + 10),
         ChestItem(Material.COAL, random.nextInt(10) + 10),
         ChestItem(Material.GOLD_INGOT, random.nextInt(9) + 12),
         ChestItem(Material.IRON_INGOT, random.nextInt(6) + 1),
