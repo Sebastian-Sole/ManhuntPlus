@@ -152,6 +152,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                     Bukkit.getScheduler().scheduleSyncRepeatingTask(main, { main.taskManager.giveHaste() }, 460L, 1200L)
                 }
                 if (supplyDrops){
+                    Bukkit.getScheduler().scheduleSyncRepeatingTask(main,{
+                        Bukkit.broadcastMessage("Supply Drop lands in 3 minutes, be ready for a chance at great loot!")
+                    },20400L,24000L)
                     Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
                         main.taskManager.supplyDrop()
                     },24000L, 24000L)
