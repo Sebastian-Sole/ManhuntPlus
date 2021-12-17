@@ -39,11 +39,25 @@ class TaskManager(private val main: PluginMain) {
                 continue
             }
             val inv = hunter.inventory
+            // If the hunter and runner are not in the same world, point compass to the location of the portal (in the hunter's world)
             if (hunter.world.environment != target.world.environment) {
-                val loc = main.portals[target.name]
-                if (loc != null) {
-                    hunter.compassTarget = loc
+                val portalLocation: Location?
+                // If hunter is in nether and runner is not in nether, show the portal in the nether
+                if (hunter.world.environment == World.Environment.NETHER && target.world.environment != World.Environment.NETHER){
+                    portalLocation = main.netherPortals[target.name]
                 }
+                // If hunter is in overworld, and runner is not in overworld
+                else if (hunter.world.environment == World.Environment.NORMAL && target.world.environment != World.Environment.NORMAL){
+                    portalLocation = main.overworldPortals[target.name]
+                }
+                else{
+                    portalLocation = hunter.world.spawnLocation
+                }
+
+                if (portalLocation != null) {
+                    hunter.compassTarget = portalLocation
+                }
+                // Add enchant to compass
                 for (j in 0 until inv.size) {
                     val stack = inv.getItem(j) ?: continue
                     if (stack.type != Material.COMPASS) continue
@@ -52,7 +66,9 @@ class TaskManager(private val main: PluginMain) {
                     meta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
                     stack.itemMeta = meta
                 }
-            } else {
+            }
+            // If hunter and runner are in the same world, point compass to the location of the runner
+            else {
                 hunter.compassTarget = target.location
                 if (main.compassEnabledInNether) {
                     for (j in 0 until inv.size) {
