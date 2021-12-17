@@ -127,7 +127,38 @@ class TaskManager(private val main: PluginMain) {
     }
 
     fun supplyDrop() {
-        TODO("Not yet implemented")
+        val hunterCoords = teamCoords(main.hunters)
+        val runnerCoords = teamCoords(main.runners)
+        val targetWorld: World? = runnerCoords.world // Supply drops will always spawn in the runner's world
+        if (runnerCoords.world?.equals(runnerCoords) == false){ // If not in the same world
+
+        }
+
+        val supplyDropLocation: Location = Location()
+        // get the average position of each team
+        // how should this be implemented if the teams are in two different worlds?
+    }
+
+    private fun teamCoords(team: List<Player>): Location {
+        var teamX = 0.0;
+        var teamY = 0.0;
+        var teamZ = 0.0;
+        var teamWorlds: MutableList<World> = mutableListOf()
+
+        for (member: Player in team){
+            teamX += member.location.x
+            teamY += member.location.y
+            teamZ += member.location.z
+            teamWorlds.add(member.world)
+        }
+        val world = mostFrequentWorld(teamWorlds)
+
+        return Location(world, (teamX/team.size).toInt().toDouble(),(teamY/team.size).toInt().toDouble(),(teamZ/team.size).toInt().toDouble())
+    }
+
+    private fun mostFrequentWorld(teamWorlds: MutableList<World>): World? {
+        val numbersByElement = teamWorlds.groupingBy { it }.eachCount()
+        return numbersByElement.maxByOrNull { it.value }?.key
     }
 
     //    public void showGlow(){
