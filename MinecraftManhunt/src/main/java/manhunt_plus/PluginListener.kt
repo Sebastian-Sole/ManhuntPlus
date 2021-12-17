@@ -125,16 +125,26 @@ class PluginListener(var main: PluginMain) : Listener {
      */
     @EventHandler
     fun onPlayerEnterPortal(event: PlayerPortalEvent) {
-        main.portals[event.player.name] = event.from
-        //todo: Add timer for runner compass
-        if (!firstEntry) {
-            firstEntry = true
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
-                if (spawnersGenerated < 5) {
-                    TaskManager.generateSpawner()
-                    spawnersGenerated++
-                }
-            }, 12000L, 2400L)
+        // If overworld to nether
+        if (event.from.world?.equals(Bukkit.getWorld("world")) == true
+            && event.to?.world?.equals(Bukkit.getWorld("world_nether")) == true){
+            main.overworldPortals[event.player.name] = event.from
+            main.netherPortals[event.player.name] = requireNotNull(event.to)
+            //todo: Add timer for runner compass
+            if (!firstEntry) {
+                firstEntry = true
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
+                    if (spawnersGenerated < 5) {
+                        TaskManager.generateSpawner()
+                        spawnersGenerated++
+                    }
+                }, 12000L, 3600L)
+            }
+        }
+        // If overworld to end
+        else if (event.from.world?.equals(Bukkit.getWorld("world")) == true
+            && event.to?.world?.equals(Bukkit.getWorld("world_end")) == true){
+            main.overworldPortals[event.player.name] = event.from
         }
     }
 
