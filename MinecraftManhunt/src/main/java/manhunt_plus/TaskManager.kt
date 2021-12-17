@@ -185,17 +185,40 @@ class TaskManager(private val main: PluginMain) {
         for (i in 0 .. 3){
             for (j in 0..3) {
                 // x = +3
-                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt())
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
                 // x = -3
-                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt())
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
+
                 // z = +3
-                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+3).toInt())
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+
                 // z = -3
-                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-3).toInt())
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+
                 // y = +3
-                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z+i).toInt())
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+
                 // y = -3
-                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z+i).toInt())
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+
             }
         }
 
