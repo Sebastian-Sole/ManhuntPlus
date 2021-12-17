@@ -1,5 +1,6 @@
 package manhunt_plus
 
+import manhunt_plus.chest_generation.generateChestItems
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
@@ -8,6 +9,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
+import org.bukkit.block.Chest
 import org.bukkit.block.CreatureSpawner
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
@@ -16,6 +18,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.CompassMeta
 import org.bukkit.potion.PotionEffectType
 import java.util.*
+import java.util.stream.Collectors
 import kotlin.math.roundToInt
 
 /**
@@ -143,23 +146,77 @@ class TaskManager(private val main: PluginMain) {
     }
 
     fun supplyDrop() {
-        val hunterCoords = teamCoords(main.hunters)
+        var hunterCoords = teamCoords(main.hunters)
         val runnerCoords = teamCoords(main.runners)
         val targetWorld: World? = runnerCoords.world // Supply drops will always spawn in the runner's world
-        if (runnerCoords.world?.equals(runnerCoords) == false){ // If not in the same world
-
+        // Don't drop supply drop in the end
+        if (targetWorld?.environment == World.Environment.THE_END){
+            return
+        }
+        // If hunters in overworld, and runners in nether
+        if (hunterCoords.world?.environment == World.Environment.NORMAL && runnerCoords.world?.environment == World.Environment.NETHER){
+            val runnerInNether: Player = main.runners.stream().filter{ player -> player.world.environment == World.Environment.NETHER }.collect(Collectors.toList())[0]
+            hunterCoords = main.netherPortals[runnerInNether.name]!!
+        }
+        else if (hunterCoords.world?.environment == World.Environment.NETHER && runnerCoords.world?.environment == World.Environment.NORMAL){
+            val runnerInOverWorld: Player = main.runners.stream().filter{ player -> player.world.environment == World.Environment.NORMAL }.collect(Collectors.toList())[0]
+            hunterCoords = main.overworldPortals[runnerInOverWorld.name]!!
         }
 
-        val supplyDropLocation: Location = Location()
+        val middleX = ((hunterCoords.x + runnerCoords.x)/2).roundToInt().toDouble()
+        val middleY = ((hunterCoords.y + runnerCoords.y)/2).roundToInt().toDouble()
+        val middleZ = ((hunterCoords.z + runnerCoords.z)/2).roundToInt().toDouble()
+
+        val supplyDropLocation: Location = Location(targetWorld,middleX,middleY,middleZ)
+        targetWorld?.let { createSupplyDrop(supplyDropLocation, it) }
+
         // get the average position of each team
         // how should this be implemented if the teams are in two different worlds?
+    }
+
+    fun createSupplyDrop(location: Location, world: World) {
+        createChestDrop(world, location)
+        generateBox(world,location)
+        Bukkit.broadcastMessage("A supply drop has landed at: ${location.x}, ${location.y}, ${location.z}")
+    }
+
+    private fun generateBox(world: World, chestBlockLocation: Location) {
+        // x = +3
+        for (i in 0 .. 3){
+            for (j in 0..3) {
+                // x = +3
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt())
+                // x = -3
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt())
+                // z = +3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+3).toInt())
+                // z = -3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-3).toInt())
+                // y = +3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z+i).toInt())
+                // y = -3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z+i).toInt())
+            }
+        }
+
+    }
+
+    private fun createChestDrop(world: World, location: Location) {
+        val block = world.getBlockAt(location)
+        block.type = Material.CHEST
+        val chest = block.state as Chest
+        val inv = chest.inventory
+        val itemsList = generateChestItems()
+        for (stack in itemsList) {
+            inv.addItem(stack)
+        }
     }
 
     private fun teamCoords(team: List<Player>): Location {
         var teamX = 0.0;
         var teamY = 0.0;
         var teamZ = 0.0;
-        var teamWorlds: MutableList<World> = mutableListOf()
+        val teamWorlds: MutableList<World> = mutableListOf()
 
         for (member: Player in team){
             teamX += member.location.x
