@@ -1,5 +1,6 @@
 package manhunt_plus
 
+import manhunt_plus.chest_generation.createSupplyDropChest
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.CompassMeta
 import org.bukkit.potion.PotionEffectType
 import java.util.*
+import java.util.stream.Collectors
 import kotlin.math.roundToInt
 
 /**
@@ -39,11 +41,25 @@ class TaskManager(private val main: PluginMain) {
                 continue
             }
             val inv = hunter.inventory
+            // If the hunter and runner are not in the same world, point compass to the location of the portal (in the hunter's world)
             if (hunter.world.environment != target.world.environment) {
-                val loc = main.portals[target.name]
-                if (loc != null) {
-                    hunter.compassTarget = loc
+                val portalLocation: Location?
+                // If hunter is in nether and runner is not in nether, show the portal in the nether
+                if (hunter.world.environment == World.Environment.NETHER && target.world.environment != World.Environment.NETHER){
+                    portalLocation = main.netherPortals[target.name]
                 }
+                // If hunter is in overworld, and runner is not in overworld
+                else if (hunter.world.environment == World.Environment.NORMAL && target.world.environment != World.Environment.NORMAL){
+                    portalLocation = main.overworldPortals[target.name]
+                }
+                else{
+                    portalLocation = hunter.world.spawnLocation
+                }
+
+                if (portalLocation != null) {
+                    hunter.compassTarget = portalLocation
+                }
+                // Add enchant to compass
                 for (j in 0 until inv.size) {
                     val stack = inv.getItem(j) ?: continue
                     if (stack.type != Material.COMPASS) continue
@@ -52,7 +68,9 @@ class TaskManager(private val main: PluginMain) {
                     meta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
                     stack.itemMeta = meta
                 }
-            } else {
+            }
+            // If hunter and runner are in the same world, point compass to the location of the runner
+            else {
                 hunter.compassTarget = target.location
                 if (main.compassEnabledInNether) {
                     for (j in 0 until inv.size) {
@@ -124,6 +142,156 @@ class TaskManager(private val main: PluginMain) {
         }
 
         return closestLocation
+    }
+
+    fun supplyDrop() {
+        var hunterCoords = teamCoords(main.hunters)
+        val runnerCoords = teamCoords(main.runners)
+        val targetWorld: World? = runnerCoords.world // Supply drops will always spawn in the runner's world
+        // Don't drop supply drop in the end
+        if (targetWorld?.environment == World.Environment.THE_END){
+            return
+        }
+        // If hunters in overworld, and runners in nether
+        if (hunterCoords.world?.environment == World.Environment.NORMAL && runnerCoords.world?.environment == World.Environment.NETHER){
+            val runnerInNether: Player = main.runners.stream().filter{ player -> player.world.environment == World.Environment.NETHER }.collect(Collectors.toList())[0]
+            hunterCoords = main.netherPortals[runnerInNether.name]!!
+        }
+        else if (hunterCoords.world?.environment == World.Environment.NETHER && runnerCoords.world?.environment == World.Environment.NORMAL){
+            val runnerInOverWorld: Player = main.runners.stream().filter{ player -> player.world.environment == World.Environment.NORMAL }.collect(Collectors.toList())[0]
+            hunterCoords = main.overworldPortals[runnerInOverWorld.name]!!
+        }
+
+        val middleX = ((hunterCoords.x + runnerCoords.x)/2).roundToInt().toDouble()
+        val middleY = ((hunterCoords.y + runnerCoords.y)/2).roundToInt().toDouble()
+        val middleZ = ((hunterCoords.z + runnerCoords.z)/2).roundToInt().toDouble()
+
+        val supplyDropLocation: Location = Location(targetWorld,middleX,middleY,middleZ)
+        targetWorld?.let { createSupplyDrop(supplyDropLocation, it) }
+
+        // get the average position of each team
+        // how should this be implemented if the teams are in two different worlds?
+    }
+
+    /**
+     * Creates a supply drop (a box of obsidian with a chest inside containing good items)
+     *
+     * @param location where the supply drop is created
+     * @param world which world the supply drop is created in
+     */
+    private fun createSupplyDrop(location: Location, world: World) {
+        createSupplyDropChest(world, location)
+        generateSupplyDropBox(world,location)
+        Bukkit.broadcastMessage("A supply drop has landed at: ${location.x}, ${location.y}, ${location.z}")
+    }
+
+    /**
+     * The obsidian box surrounding the supply drop chest
+     *
+     * @param world the world which the supply drop box is generated in
+     * @param chestBlockLocation the location of the chest block
+     */
+    private fun generateSupplyDropBox(world: World, chestBlockLocation: Location) {
+        // x = +3
+        for (i in 0 .. 3){
+            for (j in 0..3) {
+                // x = +3
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
+                // x = -3
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+j).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - 3).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-j).toInt()).type = Material.OBSIDIAN
+
+                // z = +3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z+3).toInt()).type = Material.OBSIDIAN
+
+                // z = -3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-i).toInt(), (chestBlockLocation.z-3).toInt()).type = Material.OBSIDIAN
+
+                // y = +3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y+3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+
+                // y = -3
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z+i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x + j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+                world.getBlockAt((chestBlockLocation.x - j).toInt(), (chestBlockLocation.y-3).toInt(), (chestBlockLocation.z-i).toInt()).type = Material.OBSIDIAN
+
+            }
+        }
+
+    }
+
+
+    /**
+     * Gets the average coordinates of the team provided
+     *
+     * @param team the team of which the coordinates are being returned
+     * @return the average coordinates (Location) of that team
+     */
+    private fun teamCoords(team: List<Player>): Location {
+        var teamX = 0.0;
+        var teamY = 0.0;
+        var teamZ = 0.0;
+        val teamWorlds: MutableList<World> = mutableListOf()
+
+        for (member: Player in team){
+            teamX += member.location.x
+            teamY += member.location.y
+            teamZ += member.location.z
+            teamWorlds.add(member.world)
+        }
+        val world = mostFrequentWorld(teamWorlds)
+
+        return Location(world, (teamX/team.size).toInt().toDouble(),(teamY/team.size).toInt().toDouble(),(teamZ/team.size).toInt().toDouble())
+    }
+
+    /**
+     * Finds the world which most of the team members are in. If tied, it should be a "special" world, (nether or end)
+     * @param teamWorlds
+     * @return the world which the majority of team members are in.
+     */
+    private fun mostFrequentWorld(teamWorlds: MutableList<World>): World? {
+        val worldCount = mutableMapOf<World, Int>()
+        for (world: World in teamWorlds){
+            if (!worldCount.containsKey(world)){
+                worldCount[world] = 1
+            }
+            else{
+                worldCount[world] = requireNotNull(worldCount[world]?.plus(1))
+            }
+        }
+        var currentWorld: World? = main.world
+        var currentCount = 0
+        for (entry: Map.Entry<World, Int> in worldCount.entries){
+            // If the world count for the team's list is the same as the "current" world count
+            if (entry.value == currentCount){
+                /* If the entry's world is not normal (nether or end),
+                 and the "current" world is, update it to the entry's world */
+                if (currentWorld?.environment == World.Environment.NORMAL && entry.key.environment != World.Environment.NORMAL){
+                    currentWorld = entry.key
+                }
+            }
+            // If the world count for the team's list is not the same as the "current" world count
+            else {
+                currentWorld = entry.key
+                currentCount = entry.value
+            }
+        }
+        return currentWorld
     }
 
     //    public void showGlow(){
