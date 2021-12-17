@@ -76,3 +76,7 @@ commands:
     description: Sets the health of the player
     usage: /health <value>
     permission: manhunt_plus.health
+  supplyDrops:
+    description: Enables supply drops
+    usage: /supplydrops
+    permission: manhunt_plus.supplydrops

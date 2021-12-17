@@ -4,15 +4,16 @@ import manhunt_plus.SessionHandler.onEnable
 import manhunt_plus.SessionHandler.onDisable
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.entity.Player
-import java.util.HashMap
 import org.bukkit.World
 import manhunt_plus.respawn_inventory.InventoryGenerator
 import manhunt_plus.game_state.GameStateCalculator
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.util.logging.Logger
+import kotlin.collections.HashMap
 
 class PluginMain : JavaPlugin() {
+
     @JvmField
     var hunters = mutableListOf<Player>()
     @JvmField
@@ -21,7 +22,9 @@ class PluginMain : JavaPlugin() {
     @JvmField
     var targets = HashMap<String, String>()
     @JvmField
-    var portals = HashMap<String, Location>()
+    var overworldPortals = HashMap<String, Location>() // Portals found in the overworld
+    @JvmField
+    var netherPortals = HashMap<String, Location>() // Portals found in the nether
     var world: World? = null;
     var commands: PluginCommands = PluginCommands(this)
     var debugMode = false
@@ -29,7 +32,7 @@ class PluginMain : JavaPlugin() {
     var mainLogger: Logger = Logger.getLogger("com.yoonicode.minecraftmanhuntplus.PluginMain")
 
     @JvmField
-    var compassEnabledInNether = false
+    var compassEnabledInNether = true
     var hunterDeaths = HashMap<Player, Int>()
     var runnerDeaths = HashMap<Player, Int>()
     val taskManager = TaskManager(this)
