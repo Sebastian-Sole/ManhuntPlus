@@ -30,11 +30,11 @@ fun generateSupplyDropItems(): MutableList<ItemStack> {
     val itemGenerator = ItemGenerator()
 
     val itemsToAdd = mutableListOf<ItemStack>()
-    for (i in 0 until 5) { //Generate that amount of random items
-        when (random.nextInt(11) + 1) {
+    for (i in 0 .. 7) { //Generate that amount of random items
+        when (random.nextInt(10) + 1) {
             1, 2 -> itemGenerator.generateChestItemStack(0, "supplyDrop")?.let { itemsToAdd.add(it) }
             3, 4, 5, 6 -> itemGenerator.generateChestItemStack(1, "supplyDrop")?.let { itemsToAdd.add(it) }
-            8, 9, 10, 11 -> itemGenerator.generateChestItemStack(2, "supplyDrop")?.let { itemsToAdd.add(it) }
+            8, 9, 10 -> itemGenerator.generateChestItemStack(2, "supplyDrop")?.let { itemsToAdd.add(it) }
         }
     }
     return itemsToAdd

@@ -1,6 +1,7 @@
 package manhunt_plus
 
 import manhunt_plus.chest_generation.generateChestItems
+import manhunt_plus.chest_generation.generateSupplyDropItems
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
@@ -229,7 +230,7 @@ class TaskManager(private val main: PluginMain) {
         block.type = Material.CHEST
         val chest = block.state as Chest
         val inv = chest.inventory
-        val itemsList = generateChestItems()
+        val itemsList = generateSupplyDropItems()
         for (stack in itemsList) {
             inv.addItem(stack)
         }

@@ -174,8 +174,6 @@ class ItemGenerator {
         ChestItem(Material.IRON_HELMET, 1),
         ChestItem(Material.COOKED_BEEF, 32),
         ChestItem(Material.OBSIDIAN, 2),
-        ChestItem(Material.BIRCH_BOAT, 1),
-        ChestItem(Material.CYAN_BED, 1),
         ChestItem(Material.IRON_INGOT, 5),
         ChestItem(Material.COOKED_BEEF, 32),
         ChestItem(Material.FLINT_AND_STEEL,1)
