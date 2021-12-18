@@ -174,7 +174,7 @@ class PluginListener(var main: PluginMain) : Listener {
         if (main.hunters.contains(event.player)) {
             respawnHunter(event.player)
         } else if (main.runners.contains(event.player)) {
-            respawnHunter(event.player)
+            respawnRunner(event.player)
         }
     }
 
@@ -332,6 +332,7 @@ class PluginListener(var main: PluginMain) : Listener {
                     if (!deathCounts.contains(0)) {
                         main.isGameIsOver = true
                         main.commands.gameIsRunning = false
+                        Bukkit.broadcastMessage("Game is over, all runner's died!")
                     }
                 }
             }
@@ -498,10 +499,10 @@ class PluginListener(var main: PluginMain) : Listener {
             } else {
                 player.sendMessage("You're still in the game! Get to your teammate quickly before the hunters eliminate you!")
             }
-            player.player!!.addPotionEffect(PotionEffectType.SPEED.createEffect(4800, 2))
-            player.healthScale = 20.0
-            player.maxHealth = 20.0
-            player.health = 20.0
+            player.addPotionEffect(PotionEffectType.SPEED.createEffect(4800, 2))
+            player.healthScale = main.health
+            player.maxHealth = main.health
+            player.health = main.health
             if (main.commands.runnerHelp) {
                 respawnItems(player)
             }
@@ -512,10 +513,10 @@ class PluginListener(var main: PluginMain) : Listener {
         Bukkit.getServer().scheduler.scheduleSyncDelayedTask(main, {
             player.sendMessage("Death total: " + main.hunterDeaths[player])
             player.player?.inventory?.addItem(ItemStack(Material.COMPASS, 1))
-            val speedTime: Int = if (main.gameState < 2) {
+            val speedTime: Int = if (main.gameState < 3) {
                 1200
             } else {
-                2400
+                4800
             }
             player.player?.addPotionEffect(PotionEffectType.SPEED.createEffect(speedTime, 2))
             if (main.commands.hunterHelp) {
