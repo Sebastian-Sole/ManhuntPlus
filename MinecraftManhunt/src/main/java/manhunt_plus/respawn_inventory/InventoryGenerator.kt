@@ -24,7 +24,7 @@ class InventoryGenerator(var main: PluginMain) {
             ItemStack(Material.WOODEN_SHOVEL),
             ItemStack(Material.WOODEN_SWORD),
             ItemStack(Material.COAL, 5),
-            ItemStack(Material.BREAD, 5),
+            ItemStack(Material.BREAD, 8),
             ItemStack(Material.TORCH, 5)
     )
 
@@ -45,7 +45,7 @@ class InventoryGenerator(var main: PluginMain) {
             ItemStack(Material.STONE_SWORD),
             ItemStack(Material.GOLDEN_CHESTPLATE),
             ItemStack(Material.GOLDEN_LEGGINGS),
-            ItemStack(Material.BREAD, 10),
+            ItemStack(Material.BREAD, 15),
             ItemStack(Material.TORCH, 10)
     )
 
@@ -75,7 +75,7 @@ class InventoryGenerator(var main: PluginMain) {
             ItemStack(Material.FURNACE),
             ItemStack(Material.COAL, 3),
             ItemStack(Material.OAK_LOG, 2),
-            ItemStack(Material.COOKED_BEEF, 5)
+            ItemStack(Material.COOKED_BEEF, 8)
     )
 
     // 5-6
@@ -91,7 +91,7 @@ class InventoryGenerator(var main: PluginMain) {
             ItemStack(Material.FURNACE),
             ItemStack(Material.COAL, 3),
             ItemStack(Material.OAK_LOG, 2),
-            ItemStack(Material.COOKED_BEEF, 10)
+            ItemStack(Material.COOKED_BEEF, 13)
     )
 
     // 6-7
@@ -107,7 +107,7 @@ class InventoryGenerator(var main: PluginMain) {
             ItemStack(Material.FURNACE),
             ItemStack(Material.COAL, 3),
             ItemStack(Material.OAK_LOG, 2),
-            ItemStack(Material.COOKED_BEEF, 5)
+            ItemStack(Material.COOKED_BEEF, 10)
     )
 
     // 7-8
@@ -123,7 +123,7 @@ class InventoryGenerator(var main: PluginMain) {
             ItemStack(Material.FURNACE),
             ItemStack(Material.COAL, 3),
             ItemStack(Material.OAK_LOG, 2),
-            ItemStack(Material.COOKED_BEEF, 10),
+            ItemStack(Material.COOKED_BEEF, 13),
             ItemStack(Material.SHIELD)
     )
 
@@ -140,7 +140,7 @@ class InventoryGenerator(var main: PluginMain) {
             ItemStack(Material.FURNACE),
             ItemStack(Material.COAL, 3),
             ItemStack(Material.OAK_LOG, 2),
-            ItemStack(Material.COOKED_BEEF, 15),
+            ItemStack(Material.COOKED_BEEF, 17),
             ItemStack(Material.SHIELD),
             ItemStack(Material.BOW),
             ItemStack(Material.ARROW, 10)
@@ -148,31 +148,31 @@ class InventoryGenerator(var main: PluginMain) {
 
     private val tierOne = listOf(
             ItemStack(Material.IRON_ORE, random.nextInt(5) + 1),
-            ItemStack(Material.BREAD, random.nextInt(5) + 5)
+            ItemStack(Material.COOKED_BEEF, random.nextInt(5) + 5)
     )
 
     private val tierTwo = listOf(
             ItemStack(Material.IRON_HELMET),
             ItemStack(Material.IRON_BOOTS),
-            ItemStack(Material.IRON_ORE, random.nextInt(5) + 1),
-            ItemStack(Material.BREAD, random.nextInt(5) + 5),
+            ItemStack(Material.IRON_ORE, random.nextInt(4) + 2),
+            ItemStack(Material.COOKED_BEEF, random.nextInt(5) + 5),
             ItemStack(Material.COAL, random.nextInt(5) + 5),
             ItemStack(Material.OAK_LOG, random.nextInt(3) + 5)
     )
 
     private val tierThree = listOf(
-            ItemStack(Material.BREAD, random.nextInt(5) + 1),
+            ItemStack(Material.COOKED_BEEF, random.nextInt(5) + 1),
             ItemStack(Material.COAL, random.nextInt(10) + 1),
             ItemStack(Material.OAK_LOG, random.nextInt(8) + 5),
-            ItemStack(Material.IRON_ORE, random.nextInt(5) + 1),
+            ItemStack(Material.IRON_ORE, random.nextInt(3) + 3),
             ItemStack(Material.TORCH, 32)
     )
 
     private val tierFour = listOf(
-            ItemStack(Material.BREAD, random.nextInt(5) + 1),
+            ItemStack(Material.COOKED_BEEF, random.nextInt(5) + 1),
             ItemStack(Material.COAL, random.nextInt(10) + 1),
             ItemStack(Material.OAK_LOG, random.nextInt(5) + 1),
-            ItemStack(Material.IRON_ORE, random.nextInt(5) + 1),
+            ItemStack(Material.IRON_ORE, random.nextInt(3) + 4),
             ItemStack(Material.ENDER_PEARL)
     )
 
