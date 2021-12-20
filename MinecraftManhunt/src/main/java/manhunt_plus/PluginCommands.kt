@@ -15,6 +15,9 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
+import org.bukkit.inventory.meta.PotionMeta
+import org.bukkit.potion.PotionData
+import org.bukkit.potion.PotionType
 
 /**
  * The Commands used in Manhunt
@@ -416,11 +419,21 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
         for (player in main.runners) {
             startState(player)
             player.foodLevel = 20
-            player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 400, 1))
+            player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 1200, 1))
             Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
                 main.taskManager.updateActionBar(player, main.runners)
             }, 0L, 20L)
+            val speedPotion = createSpeedPotion()
+            player.inventory.addItem(speedPotion)
         }
+    }
+
+    private fun createSpeedPotion(): ItemStack {
+        val speedPotion = ItemStack(Material.POTION, 1)
+        val meta = speedPotion.itemMeta as PotionMeta?
+        meta?.basePotionData = PotionData(PotionType.SPEED)
+        speedPotion.itemMeta = meta
+        return speedPotion
     }
 
     /**
