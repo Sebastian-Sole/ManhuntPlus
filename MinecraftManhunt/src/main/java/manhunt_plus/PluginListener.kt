@@ -1,10 +1,8 @@
 package manhunt_plus
 
 import manhunt_plus.chest_generation.createChest
-import manhunt_plus.chest_generation.generateChestItems
 import manhunt_plus.game_state.AdvancementValue
 import org.bukkit.*
-import org.bukkit.block.Chest
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -397,6 +395,13 @@ class PluginListener(var main: PluginMain) : Listener {
             }
         }
         if (main.commands.isCutClean) {
+            // If player is a hunter, run probability for no cut clean
+            if (main.getTeam(event.player) == main.hunters){
+                if (cutCleanCalculator()){
+                    return
+                }
+            }
+            // Handle cut clean
             val blockBroken = event.block
             val world = blockBroken.world
             val location = blockBroken.location
@@ -434,6 +439,16 @@ class PluginListener(var main: PluginMain) : Listener {
             }
         }
 
+    }
+
+    private fun cutCleanCalculator(): Boolean {
+        return if(main.gameState < 3.7){
+            Math.random() < 0.69
+        } else if (main.gameState < 5){
+            Math.random() < 0.2
+        } else{
+            Math.random() < 0.1
+        }
     }
 
 
