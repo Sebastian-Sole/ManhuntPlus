@@ -1,10 +1,8 @@
 package manhunt_plus
 
 import manhunt_plus.chest_generation.createChest
-import manhunt_plus.chest_generation.generateChestItems
 import manhunt_plus.game_state.AdvancementValue
 import org.bukkit.*
-import org.bukkit.block.Chest
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -135,7 +133,7 @@ class PluginListener(var main: PluginMain) : Listener {
                         TaskManager.generateSpawner()
                         spawnersGenerated++
                     }
-                }, 12000L, 3600L)
+                }, 8400L, 3600L)
             }
         }
         // If overworld to end
@@ -385,13 +383,25 @@ class PluginListener(var main: PluginMain) : Listener {
 //        }
         // If chest generate is on
         if (main.commands.chestGenerate) { // THIS MUST BE BEFORE CUT CLEAN CHECK
-            val numberGenerated = random.nextInt(550)
+            var numberGenerated : Int = 0
+            if (main.getTeam(event.player) == main.hunters)
+                numberGenerated = random.nextInt(625)
+            else if (main.getTeam(event.player) == main.runners)
+                numberGenerated = random.nextInt(525)
+
             if (numberGenerated == 69) {
                 val blockBrokenLocation = event.block.location
                 createChest(blockBrokenLocation, event, event.player.world)
             }
         }
         if (main.commands.isCutClean) {
+            // If player is a hunter, run probability for no cut clean
+            if (main.getTeam(event.player) == main.hunters){
+                if (cutCleanCalculator()){
+                    return
+                }
+            }
+            // Handle cut clean
             val blockBroken = event.block
             val world = blockBroken.world
             val location = blockBroken.location
@@ -429,6 +439,16 @@ class PluginListener(var main: PluginMain) : Listener {
             }
         }
 
+    }
+
+    private fun cutCleanCalculator(): Boolean {
+        return if(main.gameState < 3.7){
+            Math.random() < 0.69
+        } else if (main.gameState < 5){
+            Math.random() < 0.2
+        } else{
+            Math.random() < 0.1
+        }
     }
 
 

@@ -84,4 +84,18 @@ class PluginMain : JavaPlugin() {
         onDisable(this)
     }
 
+    fun getTeam(player: Player): List<Player>{
+        return when (player) {
+            in runners -> {
+                runners
+            }
+            in hunters -> {
+                hunters
+            }
+            else -> {
+                spectators
+            }
+        }
+    }
+
 }

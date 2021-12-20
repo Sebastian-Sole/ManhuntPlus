@@ -54,20 +54,22 @@ class ItemGenerator {
     )
     // Chest tiers
     private val chestTierOne = listOf(
-            ChestItem(Material.DIAMOND_BOOTS, bootsEnchants),
-            ChestItem(Material.DIAMOND_LEGGINGS, mainArmorEnchants),
-            ChestItem(Material.DIAMOND_CHESTPLATE, mainArmorEnchants),
-            ChestItem(Material.DIAMOND_HELMET, helmetEnchants),
-            ChestItem(Material.DIAMOND_PICKAXE, pickaxeEnchantments),
-            ChestItem(Material.DIAMOND, random.nextInt(3) + 1),
-            ChestItem(Material.DIAMOND_SWORD, swordEnchants),
-            ChestItem(Material.ENDER_PEARL, random.nextInt(3) + 3),
-            ChestItem(true),
-            ChestItem(Material.IRON_CHESTPLATE, mainArmorEnchants),
-            ChestItem(Material.IRON_LEGGINGS, mainArmorEnchants),
-            ChestItem(Material.IRON_BOOTS, bootsEnchants),
-            ChestItem(Material.IRON_HELMET, helmetEnchants),
-            ChestItem(Material.BOOKSHELF,6)
+        ChestItem(Material.DIAMOND_BOOTS, bootsEnchants),
+        ChestItem(Material.DIAMOND_LEGGINGS, mainArmorEnchants),
+        ChestItem(Material.DIAMOND_CHESTPLATE, mainArmorEnchants),
+        ChestItem(Material.DIAMOND_HELMET, helmetEnchants),
+        ChestItem(Material.DIAMOND_PICKAXE, pickaxeEnchantments),
+        ChestItem(Material.DIAMOND, random.nextInt(3) + 1),
+        ChestItem(Material.DIAMOND_SWORD, swordEnchants),
+        ChestItem(Material.ENDER_PEARL, random.nextInt(3) + 3),
+        ChestItem(true),
+        ChestItem(Material.IRON_CHESTPLATE, mainArmorEnchants),
+        ChestItem(Material.IRON_LEGGINGS, mainArmorEnchants),
+        ChestItem(Material.IRON_BOOTS, bootsEnchants),
+        ChestItem(Material.IRON_HELMET, helmetEnchants),
+        ChestItem(Material.BOOKSHELF,6),
+        ChestItem(Material.BLAZE_ROD,3)
+
     )
     private val chestTierTwo = listOf(
         ChestItem(Material.DIAMOND_BOOTS, 1),
@@ -84,8 +86,11 @@ class ItemGenerator {
         ChestItem(Material.IRON_BOOTS, bootsEnchants),
         ChestItem(Material.IRON_HELMET, helmetEnchants),
         ChestItem(Material.BOOK,12),
-        ChestItem(Material.BOOKSHELF,4)
-    )
+        ChestItem(Material.BOOKSHELF,4),
+        ChestItem(Material.BLAZE_ROD,random.nextInt(3)+1),
+        ChestItem(Material.GOLD_BLOCK, random.nextInt(2) + 2),
+
+        )
     private val chestTierThree = listOf(
         ChestItem(Material.GOLDEN_APPLE, 1),
         ChestItem(Material.IRON_INGOT, random.nextInt(13) + 1),
@@ -97,8 +102,10 @@ class ItemGenerator {
         ChestItem(Material.BUCKET, 1),
         ChestItem(Material.OBSIDIAN, 3),
         ChestItem(Material.BOOK,6),
-        ChestItem(Material.BOOKSHELF,2)
-    )
+        ChestItem(Material.BOOKSHELF,2),
+        ChestItem(Material.BLAZE_SPAWN_EGG,random.nextInt(3)+1),
+        ChestItem(Material.PIGLIN_SPAWN_EGG, 3),
+        )
     private val chestTierFour = listOf(
         ChestItem(Material.SHULKER_BOX, 1),
         ChestItem(Material.COOKED_BEEF, random.nextInt(10) + 10),
@@ -110,7 +117,10 @@ class ItemGenerator {
         ChestItem(Material.FEATHER, 7),
         ChestItem(Material.FLINT, 3),
         ChestItem(Material.BOOK,3),
-        ChestItem(Material.ENDER_PEARL, random.nextInt(2) + 1)
+        ChestItem(Material.ENDER_PEARL, random.nextInt(2) + 1),
+        ChestItem(Material.BLAZE_SPAWN_EGG,2),
+        ChestItem(Material.PIGLIN_SPAWN_EGG, 1),
+
         )
     private val chestTierFive = listOf(
         ChestItem(Material.OAK_PLANKS, 32),
