@@ -133,7 +133,7 @@ class PluginListener(var main: PluginMain) : Listener {
                         TaskManager.generateSpawner()
                         spawnersGenerated++
                     }
-                }, 12000L, 3600L)
+                }, 8400L, 3600L)
             }
         }
         // If overworld to end
