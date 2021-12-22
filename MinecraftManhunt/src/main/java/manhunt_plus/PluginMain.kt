@@ -7,6 +7,7 @@ import org.bukkit.entity.Player
 import org.bukkit.World
 import manhunt_plus.respawn_inventory.InventoryGenerator
 import manhunt_plus.game_state.GameStateCalculator
+import manhunt_plus.glow_handler.GlowHandler
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.util.logging.Logger
@@ -27,6 +28,7 @@ class PluginMain : JavaPlugin() {
     var netherPortals = HashMap<String, Location>() // Portals found in the nether
     var world: World? = null;
     var commands: PluginCommands = PluginCommands(this)
+    var glowHandler: GlowHandler = GlowHandler(this)
     var debugMode = false
 
     var mainLogger: Logger = Logger.getLogger("com.yoonicode.minecraftmanhuntplus.PluginMain")
@@ -73,6 +75,7 @@ class PluginMain : JavaPlugin() {
         for (command in PluginCommands.registeredCommands) {
             getCommand(command)?.setExecutor(commands)
         }
+
         onEnable(this)
     }
 

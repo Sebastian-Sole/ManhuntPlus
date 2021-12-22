@@ -1,6 +1,7 @@
 package manhunt_plus
 
 import manhunt_plus.chest_generation.createSupplyDropChest
+import manhunt_plus.glow_handler.GlowHandler
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
@@ -294,12 +295,19 @@ class TaskManager(private val main: PluginMain) {
         return currentWorld
     }
 
-    //    public void showGlow(){
-    //        for (Player player : main.runners)
-    //            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.runners);
-    //        for (Player player : main.hunters)
-    //            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.hunters);
-    //    }
+    fun showGlow(){
+        for (player: Player in main.runners){
+            for (teammate: Player in main.runners){
+                main.glowHandler.addGlow(player)
+            }
+        }
+        for (player: Player in main.hunters){
+            for (teammate: Player in main.hunters){
+                main.glowHandler.addGlow(player)
+            }
+        }
+
+    }
     companion object {
         private val random = Random()
         fun generateSpawner() {
