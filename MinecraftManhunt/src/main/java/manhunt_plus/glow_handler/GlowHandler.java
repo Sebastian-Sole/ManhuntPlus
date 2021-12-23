@@ -16,11 +16,13 @@ import org.bukkit.entity.Player;
 
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GlowHandler {
 
     private PluginMain main;
+    private List<Player> seeGlow = new ArrayList<>();
 
     public GlowHandler(PluginMain main) {
         this.main = main;
@@ -28,105 +30,37 @@ public class GlowHandler {
 
     public void showGlow() {
         var protocolManager = ProtocolLibrary.getProtocolManager();
-        protocolManager.addPacketListener(new PacketAdapter(main,ListenerPriority.NORMAL,PacketType.Play.Server.ENTITY_METADATA) {
-
+        protocolManager.addPacketListener(new PacketAdapter(main, PacketType.Play.Server.ENTITY_METADATA, PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
             @Override
             public void onPacketSending(PacketEvent event) {
-
-                if (event.getPacketType() == PacketType.Play.Server.ENTITY_METADATA){
-                    var watchableObjectList = event.getPacket().getWatchableCollectionModifier().read(0);
-                    for (WrappedWatchableObject metadata : watchableObjectList){
-                        if (metadata.getIndex() == 0){
-                            byte b = (byte) metadata.getValue();
-                            b |= 0b01000000;
-                            metadata.setValue(b);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    seeGlow = main.getTeam(player);
+                    if (seeGlow.contains(event.getPlayer())) {
+                        if (/*has a player with*/player.getEntityId() == event.getPacket().getIntegers().read(0)) {
+                            if (event.getPacketType() == PacketType.Play.Server.ENTITY_METADATA) {
+                                List<WrappedWatchableObject> watchableObjectList = event.getPacket().getWatchableCollectionModifier().read(0);
+                                for (WrappedWatchableObject metadata : watchableObjectList) {
+                                    if (metadata.getIndex() == 0) {
+                                        byte b = (byte) metadata.getValue();
+                                        b |= 0b01000000;
+                                        metadata.setValue(b);
+                                    }
+                                }
+                            }
+                            else {
+                                WrappedDataWatcher watcher = event.getPacket().getDataWatcherModifier().read(0);
+                                if (watcher.hasIndex(0)) {
+                                    byte b = watcher.getByte(0);
+                                    b |= 0b01000000;
+                                    watcher.setObject(0, b);
+                                }
+                            }
                         }
                     }
                 }
-
-
-//                // This will be changed (glow)
-//                PacketContainer packetContainer = event.getPacket();
-//                // This will unchanged (no glow)
-//                PacketContainer unchangedPacket = event.getPacket();
-//                Player player = event.getPlayer();
-//
-//                packetContainer.getIntegers().write(0, player.getEntityId());
-//
-//                final List<WrappedWatchableObject> wrappedWatchableObjectList = packetContainer.getWatchableCollectionModifier().read(0);
-//                final WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher(wrappedWatchableObjectList);
-//
-//                wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //glow
-//
-//                packetContainer.getEntityModifier(player.getWorld()).write(0, player);
-//                packetContainer.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
-//
-//                try {
-//                    List<Player> playersTeam = main.getTeam(player);
-//                    // Send the packet with glow to the player's teammates (and themself)
-//                    for (Player teammate: main.getTeam(player)) {
-//                        protocolManager.sendServerPacket(teammate, packetContainer);
-//                    }
-//                    // Send the unchanged packet to everyone else (that isn't the player's teammate)
-//                    for (Player notTeammate : Bukkit.getOnlinePlayers()){
-//                        if (!playersTeam.contains(notTeammate)){
-//                            protocolManager.sendServerPacket(notTeammate,unchangedPacket);
-//                        }
-//                    }
-//                } catch (InvocationTargetException e) {
-//                    e.printStackTrace();
-//                }
             }
-
-//            @Override
-//            public void onPacketSending(PacketEvent event) {
-//                // Packet sent to the player's teammates (with glow)
-//                PacketContainer packetContainer = event.getPacket();
-//                // Packet sent to everyone else (without glow)
-//                PacketContainer unchangedPacket = event.getPacket();
-//                // Get the player
-//                Player player = event.getPlayer();
-//
-//
-//                // Get the data from the original packet
-//                // Get the players watcher
-//                final WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher(player);
-//                // Get the WWO list
-//                var wrappedDataWatcherWWOList = wrappedDataWatcher.getWatchableObjects();
-//                // Set the glow of the WWO
-//                wrappedDataWatcherWWOList.get(6).setValue(0x40,true);
-//                // Adding the new list to the created packet
-//
-//
-//                wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)),(byte) 0x40); //glow
-//                packetContainer.getEntityModifier(player.getWorld()).write(0, player);
-//
-//                packetContainer.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
-//
-//                // Change the packets
-//                List<WrappedWatchableObject> wrappedWatchableObjectList = packetContainer.getWatchableCollectionModifier().read(0);
-//
-//
-//
-//                try {
-//                    List<Player> playersTeam = main.getTeam(player);
-//                    // Send the packet with glow to the player's teammates (and themself)
-//                    for (Player teammate: main.getTeam(player)) {
-//                        protocolManager.sendServerPacket(teammate, packetContainer);
-//                    }
-//                    // Send the unchanged packet to everyone else (that isn't the player's teammate)
-//                    for (Player notTeammate : Bukkit.getOnlinePlayers()){
-//                        if (!playersTeam.contains(notTeammate)){
-//                            protocolManager.sendServerPacket(notTeammate,unchangedPacket);
-//                        }
-//                    }
-//                } catch (InvocationTargetException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         });
     }
-
 //    public void addGlow(Player player) throws IllegalAccessException {
 //        player.setGlowing(true);
 //        CraftPlayer craftPlayer = (CraftPlayer) player;
