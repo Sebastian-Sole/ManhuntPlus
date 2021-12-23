@@ -25,13 +25,14 @@ import org.bukkit.potion.PotionType
  * @property main main used.
  */
 class PluginCommands(private val main: PluginMain) : CommandExecutor {
-    private var supplyDrops: Boolean = false;
+    private var glow: Boolean = true;
+    private var supplyDrops: Boolean = true;
     private var hitHasRegistered // used for startGameByHit option
             = false
     @JvmField
-    var extraDrops = false
+    var extraDrops = true
     @JvmField
-    var chestGenerate = false
+    var chestGenerate = true
     @JvmField
     var compassTask = -1
     private var dangerLevelTask = -1
@@ -39,11 +40,11 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
     var gameIsRunning = false
     private var worldBorderModified = false
     @JvmField
-    var runnerHelp = false
+    var runnerHelp = true
     @JvmField
-    var hunterHelp = false
-    private var hasteBoost = false
-    var isCutClean = false
+    var hunterHelp = true
+    private var hasteBoost = true
+    var isCutClean = true
         private set
 
     /**
