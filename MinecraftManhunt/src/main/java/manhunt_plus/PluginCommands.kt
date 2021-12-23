@@ -25,13 +25,14 @@ import org.bukkit.potion.PotionType
  * @property main main used.
  */
 class PluginCommands(private val main: PluginMain) : CommandExecutor {
-    private var supplyDrops: Boolean = false;
+    private var glow: Boolean = true;
+    private var supplyDrops: Boolean = true;
     private var hitHasRegistered // used for startGameByHit option
             = false
     @JvmField
-    var extraDrops = false
+    var extraDrops = true
     @JvmField
-    var chestGenerate = false
+    var chestGenerate = true
     @JvmField
     var compassTask = -1
     private var dangerLevelTask = -1
@@ -39,11 +40,11 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
     var gameIsRunning = false
     private var worldBorderModified = false
     @JvmField
-    var runnerHelp = false
+    var runnerHelp = true
     @JvmField
-    var hunterHelp = false
-    private var hasteBoost = false
-    var isCutClean = false
+    var hunterHelp = true
+    private var hasteBoost = true
+    var isCutClean = true
         private set
 
     /**
@@ -65,6 +66,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             }
             "/health" -> {
                 mutableListOf("20", "40")
+            }
+            "glow" -> {
+                mutableListOf("true", "false")
             }
             else -> existingCompletions
         }
@@ -163,13 +167,12 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                     },24000L, 24000L)
                 }
 
-                //todo: How often does this actually need to repeat?
-//            Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
-//                @Override
-//                public void run() {
-//                    main.getTaskManager().showGlow();
-//                }
-//            }, 0,600); // 2700? More?
+                if (glow) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(main, {
+                        main.glowHandler.showGlow()
+                    }, 20L)
+                }
+
                 gameIsRunning = true
                 sendStartMessage()
                 start(main)
@@ -269,6 +272,7 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 isCutClean = true
                 main.health = 40.0
                 supplyDrops = true
+                glow = true
                 commandSender.sendMessage("All helper methods are enabled")
                 return true
             }
@@ -311,6 +315,27 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 supplyDrops = !supplyDrops
                 commandSender.sendMessage("Supply drops is set to: $supplyDrops")
                 return true
+            }
+            "glow" -> {
+                if (gameIsRunning){
+                    commandSender.sendMessage("Game is running, end game before using this command.")
+                    return true
+                }
+                if (args.size != 1){
+                    glow = !glow
+                    commandSender.sendMessage("Glow is now set to $glow")
+                    return true
+                }
+                if (args[0].equals("true",true)){
+                    this.glow = true;
+                    commandSender.sendMessage("Glow is now set to $glow")
+                    return true
+                }
+                else if (args[0].equals("false",true)){
+                    this.glow = false
+                    commandSender.sendMessage("Glow is now set to $glow")
+                    return true
+                }
             }
         }
         return false
@@ -494,7 +519,8 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             "pause",
             "unpause",
             "health",
-            "supplydrops"
+            "supplydrops",
+            "glow"
         )
     }
 }

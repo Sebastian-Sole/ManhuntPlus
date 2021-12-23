@@ -294,12 +294,6 @@ class TaskManager(private val main: PluginMain) {
         return currentWorld
     }
 
-    //    public void showGlow(){
-    //        for (Player player : main.runners)
-    //            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.runners);
-    //        for (Player player : main.hunters)
-    //            GlowAPI.setGlowing(player, GlowAPI.Color.GREEN, main.hunters);
-    //    }
     companion object {
         private val random = Random()
         fun generateSpawner() {
