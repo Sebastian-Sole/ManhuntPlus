@@ -66,6 +66,9 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             "/health" -> {
                 mutableListOf("20", "40")
             }
+            "glow" -> {
+                mutableListOf("true", "false")
+            }
             else -> existingCompletions
         }
     }
@@ -163,9 +166,11 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                     },24000L, 24000L)
                 }
 
-                Bukkit.getScheduler().scheduleSyncDelayedTask(main, {
-                    main.glowHandler.showGlow()
-                },20L)
+                if (glow) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(main, {
+                        main.glowHandler.showGlow()
+                    }, 20L)
+                }
 
                 gameIsRunning = true
                 sendStartMessage()
@@ -266,6 +271,7 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 isCutClean = true
                 main.health = 40.0
                 supplyDrops = true
+                glow = true
                 commandSender.sendMessage("All helper methods are enabled")
                 return true
             }
@@ -308,6 +314,27 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                 supplyDrops = !supplyDrops
                 commandSender.sendMessage("Supply drops is set to: $supplyDrops")
                 return true
+            }
+            "glow" -> {
+                if (gameIsRunning){
+                    commandSender.sendMessage("Game is running, end game before using this command.")
+                    return true
+                }
+                if (args.size != 1){
+                    glow = !glow
+                    commandSender.sendMessage("Glow is now set to $glow")
+                    return true
+                }
+                if (args[0].equals("true",true)){
+                    this.glow = true;
+                    commandSender.sendMessage("Glow is now set to $glow")
+                    return true
+                }
+                else if (args[0].equals("false",true)){
+                    this.glow = false
+                    commandSender.sendMessage("Glow is now set to $glow")
+                    return true
+                }
             }
         }
         return false
@@ -491,7 +518,8 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
             "pause",
             "unpause",
             "health",
-            "supplydrops"
+            "supplydrops",
+            "glow"
         )
     }
 }

@@ -81,3 +81,7 @@ commands:
     description: Enables supply drops
     usage: /supplydrops
     permission: manhunt_plus.supplydrops
+  glow:
+    description: Enables glow
+    usage: /glow <boolean>
+    permission: manhunt_plus.glow
