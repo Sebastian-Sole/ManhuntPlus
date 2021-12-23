@@ -1,59 +1,24 @@
 package manhunt_plus.glow_handler;
 
-import io.netty.buffer.Unpooled;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import manhunt_plus.PluginMain;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketDataSerializer;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
-import net.minecraft.network.syncher.DataWatcher;
-import net.minecraft.network.syncher.DataWatcherObject;
-import net.minecraft.network.syncher.DataWatcherRegistry;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.server.network.PlayerConnection;
-import net.minecraft.world.entity.Entity;
-import org.apache.commons.lang.reflect.FieldUtils;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
+import net.minecraft.network.protocol.Packet;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.inventivetalent.glow.reflection.resolver.ConstructorResolver;
-import org.inventivetalent.glow.reflection.resolver.FieldResolver;
-import org.inventivetalent.packetlistener.reflection.minecraft.Minecraft;
-import org.inventivetalent.packetlistener.reflection.minecraft.MinecraftVersion;
-import org.inventivetalent.packetlistener.reflection.resolver.MethodResolver;
-import org.inventivetalent.packetlistener.reflection.resolver.minecraft.NMSClassResolver;
 
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class GlowHandler {
-
-    private static Class<?> PacketPlayOutEntityMetadata;
-    static Class<?> DataWatcher;
-    static Class<?> DataWatcherItem;
-    private static Class<?> Entity;
-
-    private static FieldResolver PacketPlayOutMetadataFieldResolver;
-    private static FieldResolver EntityFieldResolver;
-    private static FieldResolver DataWatcherFieldResolver;
-    static FieldResolver DataWatcherItemFieldResolver;
-
-    private static ConstructorResolver PacketPlayOutMetadataResolver;
-    private static ConstructorResolver DataWatcherItemConstructorResolver;
-
-    private static MethodResolver DataWatcherMethodResolver;
-    static MethodResolver DataWatcherItemMethodResolver;
-    private static MethodResolver EntityMethodResolver;
-
-    //Packets
-    private static FieldResolver EntityPlayerFieldResolver;
-    private static MethodResolver PlayerConnectionMethodResolver;
-
-    private static final NMSClassResolver NMS_CLASS_RESOLVER = new NMSClassResolver();
-
-    static boolean isPaper = false;
 
     private PluginMain main;
 
@@ -61,20 +26,121 @@ public class GlowHandler {
         this.main = main;
     }
 
-    public void addGlow(Player player) throws IllegalAccessException {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        EntityPlayer entityPlayer = craftPlayer.getHandle();
+    public void showGlow() {
+        var protocolManager = ProtocolLibrary.getProtocolManager();
+        protocolManager.addPacketListener(new PacketAdapter(main,ListenerPriority.NORMAL,PacketType.Play.Server.ENTITY_METADATA) {
 
-        var prevDataWatcherList = entityPlayer.ai().c();
-        prevDataWatcherList.get(6).a(true);
+            @Override
+            public void onPacketSending(PacketEvent event) {
 
-        PacketDataSerializer dataSerializer = new PacketDataSerializer(Unpooled.buffer());
-        PacketPlayOutEntityMetadata entityMetaData = new PacketPlayOutEntityMetadata(entityPlayer.getBukkitEntity().getEntityId(), entityPlayer.ai(),false);
+                if (event.getPacketType() == PacketType.Play.Server.ENTITY_METADATA){
+                    var watchableObjectList = event.getPacket().getWatchableCollectionModifier().read(0);
+                    for (WrappedWatchableObject metadata : watchableObjectList){
+                        if (metadata.getIndex() == 0){
+                            byte b = (byte) metadata.getValue();
+                            b |= 0b01000000;
+                            metadata.setValue(b);
+                        }
+                    }
+                }
 
-        PlayerConnection playerConnection = entityPlayer.b; // This is a player connection
-        playerConnection.a(entityMetaData);
 
+//                // This will be changed (glow)
+//                PacketContainer packetContainer = event.getPacket();
+//                // This will unchanged (no glow)
+//                PacketContainer unchangedPacket = event.getPacket();
+//                Player player = event.getPlayer();
+//
+//                packetContainer.getIntegers().write(0, player.getEntityId());
+//
+//                final List<WrappedWatchableObject> wrappedWatchableObjectList = packetContainer.getWatchableCollectionModifier().read(0);
+//                final WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher(wrappedWatchableObjectList);
+//
+//                wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x40); //glow
+//
+//                packetContainer.getEntityModifier(player.getWorld()).write(0, player);
+//                packetContainer.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+//
+//                try {
+//                    List<Player> playersTeam = main.getTeam(player);
+//                    // Send the packet with glow to the player's teammates (and themself)
+//                    for (Player teammate: main.getTeam(player)) {
+//                        protocolManager.sendServerPacket(teammate, packetContainer);
+//                    }
+//                    // Send the unchanged packet to everyone else (that isn't the player's teammate)
+//                    for (Player notTeammate : Bukkit.getOnlinePlayers()){
+//                        if (!playersTeam.contains(notTeammate)){
+//                            protocolManager.sendServerPacket(notTeammate,unchangedPacket);
+//                        }
+//                    }
+//                } catch (InvocationTargetException e) {
+//                    e.printStackTrace();
+//                }
+            }
+
+//            @Override
+//            public void onPacketSending(PacketEvent event) {
+//                // Packet sent to the player's teammates (with glow)
+//                PacketContainer packetContainer = event.getPacket();
+//                // Packet sent to everyone else (without glow)
+//                PacketContainer unchangedPacket = event.getPacket();
+//                // Get the player
+//                Player player = event.getPlayer();
+//
+//
+//                // Get the data from the original packet
+//                // Get the players watcher
+//                final WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher(player);
+//                // Get the WWO list
+//                var wrappedDataWatcherWWOList = wrappedDataWatcher.getWatchableObjects();
+//                // Set the glow of the WWO
+//                wrappedDataWatcherWWOList.get(6).setValue(0x40,true);
+//                // Adding the new list to the created packet
+//
+//
+//                wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class)),(byte) 0x40); //glow
+//                packetContainer.getEntityModifier(player.getWorld()).write(0, player);
+//
+//                packetContainer.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+//
+//                // Change the packets
+//                List<WrappedWatchableObject> wrappedWatchableObjectList = packetContainer.getWatchableCollectionModifier().read(0);
+//
+//
+//
+//                try {
+//                    List<Player> playersTeam = main.getTeam(player);
+//                    // Send the packet with glow to the player's teammates (and themself)
+//                    for (Player teammate: main.getTeam(player)) {
+//                        protocolManager.sendServerPacket(teammate, packetContainer);
+//                    }
+//                    // Send the unchanged packet to everyone else (that isn't the player's teammate)
+//                    for (Player notTeammate : Bukkit.getOnlinePlayers()){
+//                        if (!playersTeam.contains(notTeammate)){
+//                            protocolManager.sendServerPacket(notTeammate,unchangedPacket);
+//                        }
+//                    }
+//                } catch (InvocationTargetException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+        });
     }
+
+//    public void addGlow(Player player) throws IllegalAccessException {
+//        player.setGlowing(true);
+//        CraftPlayer craftPlayer = (CraftPlayer) player;
+//        EntityPlayer entityPlayer = craftPlayer.getHandle();
+//
+//        var prevDataWatcherList = entityPlayer.ai().c();
+//        prevDataWatcherList.get(6).a(true);
+//        PacketDataSerializer dataSerializer = new PacketDataSerializer(Unpooled.buffer());
+//        PacketPlayOutEntityMetadata entityMetaData = new PacketPlayOutEntityMetadata(.c(), entityPlayer.ai(),false);
+//
+//        PlayerConnection playerConnection = entityPlayer.b; // This is a player connection
+//        playerConnection.a(entityMetaData);
+//
+//    }
 
 //    public void setGlowing(Player glowingPlayer, Player sendPacketPlayer, boolean glow) {
 //        try {
