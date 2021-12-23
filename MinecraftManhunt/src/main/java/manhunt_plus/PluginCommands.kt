@@ -163,13 +163,10 @@ class PluginCommands(private val main: PluginMain) : CommandExecutor {
                     },24000L, 24000L)
                 }
 
-                //todo: How often does this actually need to repeat?
-//                Bukkit.getScheduler().scheduleSyncRepeatingTask(main, {
-//                    main.taskManager.showGlow()
-//                },60L,3L)
                 Bukkit.getScheduler().scheduleSyncDelayedTask(main, {
-                    main.taskManager.showGlow()
-                },60L)
+                    main.glowHandler.showGlow()
+                },20L)
+
                 gameIsRunning = true
                 sendStartMessage()
                 start(main)

@@ -294,20 +294,6 @@ class TaskManager(private val main: PluginMain) {
         return currentWorld
     }
 
-    fun showGlow(){
-        main.glowHandler.showGlow()
-//        for (player: Player in main.runners){
-//            for (teammate: Player in main.runners){
-//                main.glowHandler.showGlow()
-//            }
-//        }
-//        for (player: Player in main.hunters){
-//            for (teammate: Player in main.hunters){
-//                main.glowHandler.showGlow()
-//            }
-//        }
-
-    }
     companion object {
         private val random = Random()
         fun generateSpawner() {
