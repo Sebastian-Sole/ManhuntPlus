@@ -76,15 +76,6 @@ fun createChest(location: Location, event: BlockBreakEvent, world: World) {
     val chest = block.state as Chest
     val inv = chest.inventory
     val itemsList = generateChestItems()
-    // Test
-    if (inv.getItem(0) == null){
-        Bukkit.broadcastMessage("It is null")
-    }
-    else {
-        Bukkit.broadcastMessage(inv.getItem(0)!!.type.name)
-    }
-
-    Bukkit.broadcastMessage("Thing" + inv.getItem(0).toString())
 
     for (stack in itemsList) {
         var notSet = true
