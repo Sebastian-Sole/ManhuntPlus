@@ -383,13 +383,13 @@ class PluginListener(var main: PluginMain) : Listener {
 //        }
         // If chest generate is on
         if (main.commands.chestGenerate) { // THIS MUST BE BEFORE CUT CLEAN CHECK
-            var numberGenerated : Int = 0
+            var numberGenerated = 0
             if (main.getTeam(event.player) == main.hunters)
-                numberGenerated = random.nextInt(625)
+                numberGenerated = random.nextInt(625) // 625
             else if (main.getTeam(event.player) == main.runners)
-                numberGenerated = random.nextInt(525)
+                numberGenerated = random.nextInt(4) // 525
 
-            if (numberGenerated == 69) {
+            if (numberGenerated == 3) { // 69
                 val blockBrokenLocation = event.block.location
                 createChest(blockBrokenLocation, event, event.player.world)
             }
