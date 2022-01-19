@@ -307,7 +307,7 @@ class TaskManager(private val main: PluginMain) {
             val blockState = block.state as CreatureSpawner
             blockState.spawnedType = EntityType.BLAZE
             generatePlatform(block, nether)
-            Bukkit.broadcastMessage("Spawner generated at: ${x.roundToInt()}, ${y.roundToInt()}, ${z.roundToInt()}")
+            Bukkit.broadcastMessage("Blaze spawner generated at: ${x.roundToInt()}, ${y.roundToInt()}, ${z.roundToInt()}")
         }
 
         private fun generatePlatform(block: Block, nether: World) {
