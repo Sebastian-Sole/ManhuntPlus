@@ -16,7 +16,7 @@ import java.util.List;
 
 public class GlowHandler {
 
-    private PluginMain main;
+    private final PluginMain main;
     private List<Player> seeGlow = new ArrayList<>();
 
     public GlowHandler(PluginMain main) {

@@ -318,6 +318,7 @@ class PluginListener(var main: PluginMain) : Listener {
                     if (main.commands.extraDrops) {
                         giveRandomDrop(killer)
                     }
+                    killer?.addPotionEffect(PotionEffectType.REGENERATION.createEffect(150,1))
                     main.gameStateCalculator.updateDeaths()
                     Bukkit.broadcastMessage("Game state is now: " + main.gameState)
                 }
@@ -519,7 +520,12 @@ class PluginListener(var main: PluginMain) : Listener {
             } else {
                 player.sendMessage("You're still in the game! Get to your teammate quickly before the hunters eliminate you!")
             }
-            player.addPotionEffect(PotionEffectType.SPEED.createEffect(4800, 2))
+            val speedTime: Int = if (player.bedSpawnLocation!= null){
+                 240
+            } else {
+                4800
+            }
+            player.addPotionEffect(PotionEffectType.SPEED.createEffect(speedTime, 2))
             player.healthScale = main.health
             player.maxHealth = main.health
             player.health = main.health
@@ -533,10 +539,14 @@ class PluginListener(var main: PluginMain) : Listener {
         Bukkit.getServer().scheduler.scheduleSyncDelayedTask(main, {
             player.sendMessage("Death total: " + main.hunterDeaths[player])
             player.player?.inventory?.addItem(ItemStack(Material.COMPASS, 1))
-            val speedTime: Int = if (main.gameState < 3) {
-                1200
+            val speedTime: Int = if (player.bedSpawnLocation == null) {
+                if (main.gameState < 3) {
+                    1200
+                } else {
+                    4800
+                }
             } else {
-                4800
+                200
             }
             player.player?.addPotionEffect(PotionEffectType.SPEED.createEffect(speedTime, 2))
             if (main.commands.hunterHelp) {
