@@ -444,11 +444,11 @@ class PluginListener(var main: PluginMain) : Listener {
 
     private fun cutCleanCalculator(): Boolean {
         return if(main.gameState < 3.7){
-            Math.random() < 0.69
+            Math.random() < 0.63
         } else if (main.gameState < 5){
-            Math.random() < 0.2
+            Math.random() < 0.3
         } else{
-            Math.random() < 0.1
+            Math.random() < 0.2
         }
     }
 
@@ -460,49 +460,25 @@ class PluginListener(var main: PluginMain) : Listener {
      */
     //todo: Make and inventory randomizer
     private fun giveRandomDrop(player: Player?) {
-        when (random.nextInt(32)) {
-            0, 1 -> player?.player?.inventory?.addItem(ItemStack(Material.GOLDEN_APPLE))
-            2, 3 -> {
-                val diamondGenerated = random.nextInt(3) + 1
-                for (i in 0..diamondGenerated) {
-                    player!!.player!!.inventory.addItem(ItemStack(Material.DIAMOND))
-                }
+        when (random.nextInt(30)) {
+            0, 1, 21, 22 -> player?.player?.inventory?.addItem(ItemStack(Material.GOLDEN_APPLE))
+            2, 3, 23, 24 -> {
+                player!!.player!!.inventory.addItem(ItemStack(Material.DIAMOND, random.nextInt(3) + 1))
             }
-            4, 5, 6 -> {
-                val enderGen = random.nextInt(3) + 1
-                for (i in 0..enderGen) {
-                    player?.player?.inventory?.addItem(ItemStack(Material.ENDER_PEARL))
-                }
+            4, 5, 6, 25, 26 -> {
+                player?.player?.inventory?.addItem(ItemStack(Material.ENDER_PEARL, random.nextInt(3) + 1))
             }
-            7, 8 -> player?.player?.inventory?.addItem(ItemStack(Material.ENDER_EYE))
-            9, 10, 11, 12 -> {
-                for (i in 0..31) {
-                    player?.player?.inventory?.addItem(ItemStack(Material.BREAD))
-                }
+            7, 8, 27, 28 -> player?.player?.inventory?.addItem(ItemStack(Material.ENDER_EYE))
+            9, 10, 11 -> {
+                player?.player?.inventory?.addItem(ItemStack(Material.BREAD, 32))
             }
             13, 14, 15, 16 -> {
-                for (i in 0..15) {
-                    player?.player?.inventory?.addItem(ItemStack(Material.OAK_WOOD))
-                }
+                player?.player?.inventory?.addItem(ItemStack(Material.OAK_WOOD, 16))
             }
             17, 18, 19 -> {
-                val ironGenerated = random.nextInt(5 + 1)
-                for (i in 0..ironGenerated) {
-                    player?.player?.inventory?.addItem(ItemStack(Material.IRON_INGOT))
-                }
+                player?.player?.inventory?.addItem(ItemStack(Material.IRON_INGOT, random.nextInt(5 + 1)))
             }
-            20, 21, 22, 23 -> {
-                val coalGenerated = random.nextInt(16) + 1
-                for (i in 0..coalGenerated) {
-                    player?.player?.inventory?.addItem(ItemStack(Material.COAL))
-                }
-            }
-            24, 25, 26, 27, 28 -> {
-                for (i in 0..63) {
-                    player?.player?.inventory?.addItem(ItemStack(Material.COBBLESTONE, 64))
-                }
-            }
-            29 -> player?.player?.inventory?.addItem(ItemStack(Material.ENCHANTING_TABLE))
+            20, 12 -> player?.player?.inventory?.addItem(ItemStack(Material.ENCHANTING_TABLE))
             else -> player?.player?.inventory?.addItem(ItemStack(Material.CYAN_BED))
         }
     }
