@@ -237,10 +237,10 @@ class InventoryGenerator(var main: PluginMain) {
      * @param score
      */
     private fun calculateScore(score: Double) {
-        level = score.toInt()
-        val scoreAsString = java.lang.Double.toString(score)
+        this.level = score.toInt()
+        val scoreAsString = score.toString()
         val decimalString = scoreAsString.substring(scoreAsString.indexOf("."))
-        modifier = getDecimal(decimalString)
+        this.modifier = getDecimal(decimalString)
     }
 
     /**
