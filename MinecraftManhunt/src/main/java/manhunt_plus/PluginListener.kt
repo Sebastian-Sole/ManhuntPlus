@@ -532,10 +532,12 @@ class PluginListener(var main: PluginMain) : Listener {
     }
 
     private fun respawnItems(respawned: Player?) {
-        val inventoryToAdd = respawned?.player?.inventory
-        val itemsToAdd = main.itemGenerator.generateInventory()
-        for (itemStack in itemsToAdd) {
-            inventoryToAdd?.addItem(itemStack)
+        if (main.gameState != 0.0) {
+            val inventoryToAdd = respawned?.player?.inventory
+            val itemsToAdd = main.itemGenerator.generateInventory()
+            for (itemStack in itemsToAdd) {
+                inventoryToAdd?.addItem(itemStack)
+            }
         }
     }
 
