@@ -28,9 +28,9 @@ public class GlowHandler {
         protocolManager.addPacketListener(new PacketAdapter(main, PacketType.Play.Server.ENTITY_METADATA, PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
             @Override
             public void onPacketSending(PacketEvent event) {
+                seeGlow = main.getTeam(event.getPlayer());
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    seeGlow = main.getTeam(player);
-                    if (seeGlow.contains(event.getPlayer())) {
+                    if (seeGlow.contains(player)) {
                         if (player.getEntityId() == event.getPacket().getIntegers().read(0)) {
                             if (event.getPacketType() == PacketType.Play.Server.ENTITY_METADATA) {
                                 List<WrappedWatchableObject> watchableObjectList = event.getPacket().getWatchableCollectionModifier().read(0);
